@@ -30,8 +30,9 @@ class VisionImageAdapter implements AttachmentAdapter {
       id: crypto.randomUUID(),
       type: "image",
       name: file.name,
+  contentType: file.type || "application/octet-stream",
       file,
-      status: { type: "running" },
+  status: { type: "running", reason: "uploading", progress: 0 },
     };
   }
   async send(attachment: PendingAttachment): Promise<CompleteAttachment> {
@@ -42,6 +43,7 @@ class VisionImageAdapter implements AttachmentAdapter {
       id: attachment.id,
       type: "image",
       name: attachment.name,
+  contentType: (attachment as any).contentType || "application/octet-stream",
       content: [
         {
           type: "image",
