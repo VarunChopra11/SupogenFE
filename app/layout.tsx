@@ -26,7 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider
-      afterSignOutUrl="/api/auth/signout-callback"
+      afterSignOutUrl="https://supogen.com"
     >
       <html lang="en">
         <body
