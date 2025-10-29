@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import { Github, MessagesSquare } from "lucide-react";
 import Link from "next/link";
@@ -13,12 +15,12 @@ import {
 } from "@/components/ui/sidebar";
 import { ThreadList } from "@/components/assistant-ui/thread-list";
 import { SignedIn, UserButton } from "@clerk/nextjs";
-import { useUser } from "@clerk/nextjs";
+import { useBackendAuth } from "@/context/backend-auth";
 
 export function ThreadListSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
-  const { user } = useUser();
+  const { user } = useBackendAuth();
   return (
     <Sidebar {...props}>
       <SidebarHeader className="aui-sidebar-header mb-2 border-b">
@@ -61,7 +63,7 @@ export function ThreadListSidebar({
                 <div className="aui-sidebar-footer-heading flex flex-col gap-0.5 leading-none">
                   <span className="aui-sidebar-footer-title font-semibold">
                     {" "}
-                    {user?.firstName}
+                    {user?.name || user?.email || "User"}
                   </span>
                 </div>
               </div>

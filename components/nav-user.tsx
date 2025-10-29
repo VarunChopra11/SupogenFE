@@ -31,7 +31,7 @@ import { useRouter } from "next/navigation";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
-  const { user } = useUser();
+  const { user } = useBackendAuth();
   const { signOut } = useClerk();
   const { signOutFromBackend } = useBackendAuth();
   const router = useRouter();
@@ -50,7 +50,7 @@ export function NavUser() {
   };
 
   const handleAccountClick = () => {
-    window.location.href = "https://accounts.supogen.com/user";
+    router.push("/account");
   };
 
   const handleBillingClick = () => {
@@ -71,16 +71,14 @@ export function NavUser() {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user?.imageUrl} alt={user?.firstName || "User"} />
+                <AvatarImage src={user?.picture ?? undefined} alt={user?.name || user?.email || "User"} />
                 <AvatarFallback className="rounded-lg">
-                  {user?.firstName?.charAt(0)?.toUpperCase() || "U"}
+                  {(user?.name?.charAt(0) || user?.email?.charAt(0))?.toUpperCase() || "U"}
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user?.firstName}</span>
-                <span className="text-muted-foreground truncate text-xs">
-                  {user?.emailAddresses[0].emailAddress}
-                </span>
+                <span className="truncate font-medium">{user?.name || "User"}</span>
+                <span className="text-muted-foreground truncate text-xs">{user?.email}</span>
               </div>
               {/* <IconDotsVertical className="ml-auto size-4" /> */}
             </SidebarMenuButton>
@@ -98,10 +96,10 @@ export function NavUser() {
                 </SignedIn>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">
-                    {user?.firstName}
+                    {user?.name || "User"}
                   </span>
                   <span className="text-muted-foreground truncate text-xs">
-                    {user?.emailAddresses[0].emailAddress}
+                    {user?.email}
                   </span>
                 </div>
               </div>

@@ -13,9 +13,9 @@ import { useAuth, useClerk } from "@clerk/nextjs";
 
 type BackendUser = {
   user_id: string;
-  full_name?: string | null;
+  name?: string | null;
   email?: string | null;
-  image_url?: string | null;
+  picture?: string | null;
 } | null;
 
 type BackendAuthContextValue = {
@@ -77,9 +77,9 @@ export function BackendAuthProvider({ children }: { children: React.ReactNode })
       if (data?.user) {
         setUser({
           user_id: data.user.user_id,
-          full_name: data.user.full_name ?? null,
+          name: data.user.name ?? null,
           email: data.user.email ?? null,
-          image_url: data.user.image_url ?? null,
+          picture: data.user.picture ?? null,
         });
         setCsrfToken(data.csrf_token ?? null);
         setBackendAuthenticated(true);
