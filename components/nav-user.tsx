@@ -24,12 +24,43 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { SignedIn, UserButton } from "@clerk/nextjs";
+import { SignedIn, UserButton, useClerk } from "@clerk/nextjs";
 import { useUser } from "@clerk/nextjs";
+import { useBackendAuth } from "@/context/backend-auth";
+import { useRouter } from "next/navigation";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
   const { user } = useUser();
+  const { signOut } = useClerk();
+  const { signOutFromBackend } = useBackendAuth();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      // Sign out from backend first
+      await signOutFromBackend();
+      // Then sign out from Clerk
+      await signOut();
+    } catch (error) {
+      console.error("Logout error:", error);
+      // Still attempt to sign out from Clerk even if backend fails
+      await signOut();
+    }
+  };
+
+  const handleAccountClick = () => {
+    window.location.href = "https://accounts.supogen.com/user";
+  };
+
+  const handleBillingClick = () => {
+    router.push("/billing");
+  };
+
+  const handleNotificationsClick = () => {
+    router.push("/notifications");
+  };
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -39,7 +70,12 @@ export function NavUser() {
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <Avatar className="h-8 w-8 rounded-lg grayscale"></Avatar>
+              <Avatar className="h-8 w-8 rounded-lg">
+                <AvatarImage src={user?.imageUrl} alt={user?.firstName || "User"} />
+                <AvatarFallback className="rounded-lg">
+                  {user?.firstName?.charAt(0)?.toUpperCase() || "U"}
+                </AvatarFallback>
+              </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{user?.firstName}</span>
                 <span className="text-muted-foreground truncate text-xs">
@@ -72,21 +108,21 @@ export function NavUser() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={handleAccountClick}>
                 <IconUserCircle />
                 Account
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={handleBillingClick}>
                 <IconCreditCard />
                 Billing
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={handleNotificationsClick}>
                 <IconNotification />
                 Notifications
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout}>
               <IconLogout />
               Log out
             </DropdownMenuItem>

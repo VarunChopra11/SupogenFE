@@ -37,16 +37,16 @@ export default function BackendDownPage() {
         <CardHeader>
           <div className="flex items-center gap-2">
             <AlertCircle className="h-6 w-6 text-destructive" />
-            <CardTitle>Backend Authentication Failed</CardTitle>
+            <CardTitle>Connection Failed</CardTitle>
           </div>
           <CardDescription>
-            Unable to authenticate with the backend server.
+            Unable to authenticate with server.
           </CardDescription>
         </CardHeader>
 
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            Your Clerk authentication is valid, but we couldn’t establish a session with our backend server. 
+            Your Authentication is valid, but we couldn't establish a session with our servers. 
             This might be due to:
           </p>
           <ul className="list-disc space-y-2 pl-6 text-sm text-muted-foreground">
