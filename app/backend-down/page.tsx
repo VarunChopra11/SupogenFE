@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,8 +16,63 @@ import { useBackendAuth } from "@/context/backend-auth";
 
 export default function BackendDownPage() {
   const router = useRouter();
-  const { ensureBackendAuth } = useBackendAuth();
+  const { ensureBackendAuth, backendAuthenticated } = useBackendAuth();
   const [isRetrying, setIsRetrying] = useState(false);
+  const [shouldRenderPage, setShouldRenderPage] = useState(false);
+
+  // Track latest backend auth state without re-running the effect
+  const authRef = useRef(backendAuthenticated);
+  useEffect(() => {
+    authRef.current = backendAuthenticated;
+  }, [backendAuthenticated]);
+
+  // Before rendering this page, poll for up to 10s and redirect if auth becomes valid
+  useEffect(() => {
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout> | null = null;
+    let inFlight = false;
+    const deadline = Date.now() + 10_000; // 10 seconds
+
+  const tick = async () => {
+      if (cancelled) return;
+
+      // If already authenticated, redirect immediately
+      if (authRef.current) {
+        router.replace("/dashboard");
+        return;
+      }
+
+      // Try to ensure backend auth (avoid overlapping calls)
+    if (!inFlight) {
+        inFlight = true;
+        try {
+      const ok = await ensureBackendAuth(true);
+          if (ok || authRef.current) {
+            router.replace("/dashboard");
+            return;
+          }
+        } finally {
+          inFlight = false;
+        }
+      }
+
+      // Stop polling after deadline and render the fallback page
+      if (Date.now() >= deadline) {
+        if (!cancelled) setShouldRenderPage(true);
+        return;
+      }
+
+  timer = setTimeout(tick, 1000); // poll every 1s
+    };
+
+    // start polling loop
+    tick();
+
+    return () => {
+      cancelled = true;
+      if (timer) clearTimeout(timer);
+    };
+  }, [ensureBackendAuth, router]);
 
   const handleRetry = async () => {
     setIsRetrying(true);
@@ -30,6 +85,9 @@ export default function BackendDownPage() {
       setIsRetrying(false);
     }
   };
+
+  // Don't render the fallback UI during the pre-check window
+  if (!shouldRenderPage) return null;
 
   return (
     <div className="flex min-h-screen w-full items-center justify-center bg-background p-4">
