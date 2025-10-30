@@ -39,6 +39,11 @@ const data = {
       url: "/context",
       icon: IconListDetails,
     },
+    {
+      title: "Add bot",
+      url: "/addbot",
+      icon: IconListDetails,
+    },
   ],
 };
 
