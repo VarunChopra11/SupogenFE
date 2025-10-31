@@ -4,7 +4,13 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { SiteHeader } from "@/components/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { ProtectedRoute } from "@/components/auth/protected-route";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -23,10 +29,10 @@ type TokenResponse = {
   secret?: string;
   value?: string;
   access_token?: string;
-  expires_in?: number; // seconds
-  ttl?: number; // seconds
-  expires_at?: string; // ISO date
-  expiry?: string; // ISO or timestamp string
+  expires_in?: number;
+  ttl?: number;
+  expires_at?: string;
+  expiry?: string;
 };
 
 export default function AddBotPage() {
@@ -60,9 +66,7 @@ export default function AddBotPage() {
   }, []);
 
   const extractToken = (data: TokenResponse): string => {
-    return (
-      data.token || data.secret || data.value || data.access_token || ""
-    );
+    return data.token || data.secret || data.value || data.access_token || "";
   };
 
   const computeExpiry = (data: TokenResponse): number => {
@@ -70,7 +74,7 @@ export default function AddBotPage() {
       const ts = Date.parse(data.expires_at || data.expiry!);
       if (!Number.isNaN(ts)) return ts;
     }
-    const secs = data.expires_in ?? data.ttl ?? 600; // default 10 min
+    const secs = data.expires_in ?? data.ttl ?? 300;
     return Date.now() + secs * 1000;
   };
 
@@ -116,17 +120,19 @@ export default function AddBotPage() {
   return (
     <ProtectedRoute>
       <SidebarProvider
-        style={{
-          "--sidebar-width": "calc(var(--spacing) * 72)",
-          "--header-height": "calc(var(--spacing) * 12)",
-        } as React.CSSProperties}
+        style={
+          {
+            "--sidebar-width": "calc(var(--spacing) * 72)",
+            "--header-height": "calc(var(--spacing) * 12)",
+          } as React.CSSProperties
+        }
       >
         <AppSidebar variant="inset" />
         <SidebarInset>
           <SiteHeader />
           <div className="flex flex-1 flex-col">
-            <div className="@container/main mx-auto w-full max-w-5xl flex-1 p-4 sm:p-6">
-              <div className="mb-6 flex items-start justify-between gap-4">
+            <div className="mx-auto w-full max-w-5xl flex-1 p-4 sm:p-6">
+              <div className="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
                 <div>
                   <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">
                     Add Supogen to Discord
@@ -135,51 +141,53 @@ export default function AddBotPage() {
                     Connect the bot to your server and authenticate securely.
                   </p>
                 </div>
-                <Badge className="hidden sm:inline-flex" variant="secondary">
+                <Badge variant="secondary">
                   <ShieldCheck className="mr-1 h-4 w-4" /> Secured
                 </Badge>
               </div>
 
-              <div className="grid grid-rows-1 gap-6 md:grid-rows-3">
-                {/* Discord Bot Link */}
-                <Card className="col-span-1">
+              <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                {/* 1. Invite Bot */}
+                <Card>
                   <CardHeader>
                     <CardTitle>1. Invite the Discord Bot</CardTitle>
                     <CardDescription>
-                      Use this link to add the bot to your server with the required permissions.
+                      Use this link to add the bot to your server with required permissions.
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-3">
-                    <Label htmlFor="discordLink">Discord OAuth URL</Label>
-                    <div className="flex w-full flex-col gap-3 sm:flex-row">
-                      <div className="flex-1">
-                        <Snippet text={DISCORD_BOT_URL} />
+                  <CardContent className="space-y-4">
+                    <Label>Discord OAuth URL</Label>
+                    <div className="rounded-md border bg-muted/50 p-2 overflow-hidden">
+                      <div className="overflow-x-auto [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-muted-foreground/20">
+                      <code className="block min-w-max whitespace-pre text-xs sm:text-sm font-mono leading-6">
+                        {DISCORD_BOT_URL}
+                      </code>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Button
-                          variant="outline"
-                          className="w-full sm:w-auto"
-                          onClick={() => handleCopy(DISCORD_BOT_URL)}
-                        >
-                          Copy Link
+                    </div>
+
+                    {/* Centered buttons */}
+                    <div className="flex justify-center items-center gap-3 flex-wrap">
+                      <Button
+                        variant="outline"
+                        onClick={() => handleCopy(DISCORD_BOT_URL)}
+                      >
+                        Copy Link
+                      </Button>
+                      <a
+                        href={DISCORD_BOT_URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Button>
+                          Open Link <ExternalLink className="ml-2 h-4 w-4" />
                         </Button>
-                        <a
-                          href={DISCORD_BOT_URL}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="w-full sm:w-auto"
-                        >
-                          <Button className="w-full">
-                            Open Link <ExternalLink className="ml-2 h-4 w-4" />
-                          </Button>
-                        </a>
-                      </div>
+                      </a>
                     </div>
                   </CardContent>
                 </Card>
 
-                {/* Secret Token */}
-                <Card className="col-span-1">
+                {/* 2. Secret Token */}
+                <Card>
                   <CardHeader>
                     <CardTitle>2. Get Secret Token</CardTitle>
                     <CardDescription>
@@ -187,52 +195,52 @@ export default function AddBotPage() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div className="space-y-2">
-                      <Label>Secret Token</Label>
-                      <div className="flex flex-col gap-3 sm:flex-row">
-                        <div className="flex-1 max-w-full overflow-hidden break-all">
-                          {token ? (
-                            <Snippet text={token} copyable={false} />
-                          ) : (
-                            <Input readOnly value="Generating..." />
-                          )}
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Button
-                            variant="outline"
-                            className="w-full sm:w-auto"
-                            onClick={() => token && handleCopy(token)}
-                            disabled={!token}
-                          >
-                            Copy Token
-                          </Button>
-                          <Button
-                            variant="default"
-                            className="w-full sm:w-auto"
-                            onClick={fetchToken}
-                            disabled={loading}
-                          >
-                            <RefreshCw className={`mr-2 h-4 w-4 ${loading ? "animate-spin" : ""}`} />
-                            {loading ? "Regenerating" : token ? "Regenerate" : "Generate"}
-                          </Button>
-                        </div>
-                      </div>
-                      {error && (
-                        <p className="text-sm text-destructive">{error}</p>
+                    <Label className="mt-5.5 block">Secret Token</Label>
+                    <div className="rounded-md border bg-muted/50 p-2 overflow-hidden">
+                      <div className="overflow-x-auto [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-muted-foreground/20">
+                      {token ? (
+                        <code className="block min-w-max whitespace-pre text-xs sm:text-sm font-mono leading-6">
+                        {token}
+                        </code>
+                      ) : (
+                        <Input readOnly value="Generating..." />
                       )}
+                      </div>
                     </div>
 
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Clock className="h-4 w-4" />
-                      <span>
-                        Expires in: <span className={expired ? "text-destructive" : "text-foreground"}>{formattedRemaining}</span>
-                      </span>
+                    {/* Inline buttons + expiry */}
+                    <div className="flex justify-center items-center gap-3 flex-wrap">
+                      <Button
+                        variant="outline"
+                        onClick={() => token && handleCopy(token)}
+                        disabled={!token}
+                      >
+                        Copy Token
+                      </Button>
+                      <Button
+                        variant="default"
+                        onClick={fetchToken}
+                        disabled={loading}
+                      >
+                        <RefreshCw className={`mr-2 h-4 w-4 ${loading ? "animate-spin" : ""}`} />
+                        {loading ? "Regenerating" : token ? "Regenerate" : "Generate"}
+                      </Button>
+                      <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                        <Clock className="h-4 w-4" />
+                        <span
+                          className={expired ? "text-destructive font-medium" : "text-foreground"}
+                        >
+                          {formattedRemaining}
+                        </span>
+                      </div>
                     </div>
+
+                    {error && <p className="text-sm text-destructive text-center">{error}</p>}
                   </CardContent>
                 </Card>
 
-                {/* Steps */}
-                <Card className="col-span-1">
+                {/* 3. Steps */}
+                <Card className="lg:col-span-2">
                   <CardHeader>
                     <CardTitle>3. Steps</CardTitle>
                     <CardDescription>
@@ -241,29 +249,26 @@ export default function AddBotPage() {
                   </CardHeader>
                   <CardContent className="space-y-3 text-sm">
                     <ol className="list-decimal space-y-2 pl-5">
-                      <li>
-                        Open the provided Discord link and add the bot to your server or chosen channels with permissions.
-                      </li>
+                      <li>Open the provided Discord link and add the bot to your server or channels.</li>
                       <li>Copy your secret token.</li>
                       <li>
-                        In your Discord server, send the command:
+                        In your Discord server, within 5 minutes of token generation, send the command:
                         <div className="mt-2 rounded-md bg-muted p-2">
-                          <code className="whitespace-pre-wrap break-all">/authenticate {"<your-secret-token>"}</code>
+                          <code className="whitespace-pre-wrap break-all">
+                            /authenticate {"<your-secret-token>"}
+                          </code>
                         </div>
                       </li>
                       <li>Wait for the confirmation message.</li>
-                      <li>
-                        Done! <span role="img" aria-label="done">✅</span>
-                      </li>
+                      <li>Done! ✅</li>
                     </ol>
                   </CardContent>
                 </Card>
               </div>
 
               <Separator className="my-8" />
-
-              <div className="text-xs text-muted-foreground">
-                Tokens are valid for 10 minutes. Regenerate if expired or compromised.
+              <div className="text-xs text-muted-foreground text-center">
+                Secret Tokens is valid for 5 minutes. Regenerate if expired or compromised.
               </div>
             </div>
           </div>
