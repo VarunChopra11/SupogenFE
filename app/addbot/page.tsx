@@ -22,7 +22,7 @@ import { Clock, ExternalLink, RefreshCw, ShieldCheck } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 const DISCORD_BOT_URL =
-  "https://discord.com/api/oauth2/authorize?client_id=YOUR_CLIENT_ID&permissions=8&scope=bot%20applications.commands";
+  "https://discord.com/oauth2/authorize?client_id=1432309525444038797";
 
 type TokenResponse = {
   token?: string;
@@ -268,7 +268,7 @@ export default function AddBotPage() {
 
               <Separator className="my-8" />
               <div className="text-xs text-muted-foreground text-center">
-                Secret Tokens is valid for 5 minutes. Regenerate if expired or compromised.
+                Secret Token is valid for 5 minutes. Regenerate if expired or compromised.
               </div>
             </div>
           </div>
