@@ -7,7 +7,7 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Upload } from "lucide-react";
+import { Loader2, Upload } from "lucide-react";
 import { ProtectedRoute } from "@/components/auth/protected-route";
 import { useAuthenticatedFetch } from "@/hooks/use-authenticated-fetch";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -15,7 +15,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 type Server = {
   server_id: string;
   server_name: string;
-  members_count: number;
+  member_count: number;
 };
 
 type DocumentItem = {
@@ -45,6 +45,8 @@ export default function Page() {
   const [submitLoading, setSubmitLoading] = useState<boolean>(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
+  // Tracks only the POST /documents/embed_docs lifecycle for overlay
+  const [embedSubmitting, setEmbedSubmitting] = useState<boolean>(false);
 
   // ✅ URL Validation
   const validateUrl = (value: string) => {
@@ -78,10 +80,13 @@ export default function Page() {
 
     try {
       setSubmitLoading(true);
+  setEmbedSubmitting(true);
       const res = await authenticatedFetch("/documents/embed_docs", {
-        method: "PUT",
+        method: "POST",
         body: JSON.stringify({ document_url: url, server_id: selectedServerId }),
       });
+  // Hide the overlay as soon as the POST responds (success or error)
+  setEmbedSubmitting(false);
       if (!res.ok) {
         const text = await res.text();
         throw new Error(text || `Failed to embed document (${res.status})`);
@@ -89,7 +94,7 @@ export default function Page() {
       // Clear the url and refresh documents list
       setUrl("");
       setIsValidUrl(null);
-      setSubmitSuccess("Document submitted for embedding.");
+      setSubmitSuccess("Document Added");
       // Refresh documents for the selected server
       setDocumentsLoading(true);
       setDocumentsError(null);
@@ -108,6 +113,8 @@ export default function Page() {
         setDocumentsLoading(false);
       }
     } catch (e: any) {
+  // Ensure overlay is hidden on error as well
+  setEmbedSubmitting(false);
       setSubmitError(e?.message || "Failed to submit document.");
     } finally {
       setSubmitLoading(false);
@@ -233,7 +240,7 @@ export default function Page() {
                         >
                           <div className="font-medium line-clamp-1">{s.server_name}</div>
                           <div className="text-xs text-muted-foreground mt-1">
-                            Members: {s.members_count}
+                            Members: {s.member_count}
                           </div>
                           {selected && (
                             <div className="mt-2 inline-block text-[10px] uppercase tracking-wide text-blue-600">
@@ -256,13 +263,13 @@ export default function Page() {
                 {/* URL Input */}
                 <div className="flex flex-col gap-2">
                   <Input
-                    placeholder="Enter your site URL (e.g. https://example.com)"
+                    placeholder="Enter your docs page URL (e.g. https://example.com/docs/introduction)"
                     value={url}
                     onChange={handleUrlChange}
                   />
                   {isValidUrl === false && (
                     <p className="text-sm text-red-500">
-                      Please enter a valid URL starting with https:// or http://
+                      Please enter a valid URL starting with https://
                     </p>
                   )}
                 </div>
@@ -323,26 +330,35 @@ export default function Page() {
                 )}
 
                 {selectedServerId && !documentsLoading && !documentsError && (
-                  <div className="flex flex-col gap-2">
+                  <div className="flex flex-col gap-3">
                     {documents.length === 0 ? (
                       <p className="text-muted-foreground text-sm">
                         No documents found for this server.
                       </p>
                     ) : (
-                      <ul className="list-decimal list-inside space-y-1">
+                      <div className="flex flex-col gap-3">
                         {documents.map((doc, idx) => (
-                          <li key={doc.document_id} className="text-sm">
-                            <a
-                              href={doc.document_url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-blue-600 hover:underline break-all"
-                            >
-                              {doc.document_url}
-                            </a>
-                          </li>
+                          <div
+                            key={doc.document_id}
+                            className="group flex items-start gap-3 rounded-lg border border-gray-200 bg-white/60 p-3 shadow-sm transition hover:bg-white hover:shadow-md dark:border-gray-800 dark:bg-neutral-900/60 dark:hover:bg-neutral-900"
+                          >
+                            <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-100 text-xs font-semibold text-blue-700 dark:bg-blue-900/40 dark:text-blue-300">
+                              {idx + 1}
+                            </div>
+                            <div className="min-w-0 flex-1">
+                                <a
+                                href={doc.document_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center h-full truncate text-sm text-blue-600 hover:underline dark:text-blue-400"
+                                title={doc.document_url}
+                                >
+                                {doc.document_url}
+                              </a>
+                            </div>
+                          </div>
                         ))}
-                      </ul>
+                      </div>
                     )}
                   </div>
                 )}
@@ -351,6 +367,14 @@ export default function Page() {
           </div>
         </SidebarInset>
       </SidebarProvider>
+      {embedSubmitting && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
+          <div className="flex items-center gap-3 rounded-lg border bg-card px-4 py-3 shadow-lg">
+            <Loader2 className="h-5 w-5 animate-spin text-primary" />
+            <span className="text-sm text-muted-foreground">Submitting…</span>
+          </div>
+        </div>
+      )}
       {/* Local thin light-grey scrollbar styles for the servers scroller */}
       <style jsx global>{`
         .thin-scrollbar {
