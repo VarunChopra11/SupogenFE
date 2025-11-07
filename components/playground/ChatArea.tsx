@@ -10,7 +10,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface Message {
   id: string;
-  role: "user" | "assistant";
+  role: "user" | "assistant" | "system";
   content: string;
   timestamp: Date;
 }
@@ -52,7 +52,7 @@ export function ChatArea({
   onSendMessage,
 }: ChatAreaProps) {
   const [inputValue, setInputValue] = React.useState("");
-  const scrollAreaRef = React.useRef<HTMLDivElement>(null);
+  const messagesEndRef = React.useRef<HTMLDivElement>(null);
 
   const handleSend = () => {
     if (inputValue.trim() && !isLoading) {
@@ -74,13 +74,14 @@ export function ChatArea({
     }
   };
 
+  // Auto-scroll to bottom when messages change
   React.useEffect(() => {
-    if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
-    }
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const showEmptyState = !threadId || messages.length === 0;
+  // Filter out system messages for display
+  const visibleMessages = messages.filter((msg) => msg.role !== "system");
+  const showEmptyState = !threadId || visibleMessages.length === 0;
 
   return (
     <div className="flex h-full flex-1 flex-col">
@@ -120,53 +121,60 @@ export function ChatArea({
             </div>
           </div>
         ) : (
-          <ScrollArea className="h-full" ref={scrollAreaRef}>
+          <ScrollArea className="h-full">
             <div className="flex flex-col gap-4 p-6">
-              {messages.map((message) => (
-                <div
-                  key={message.id}
-                  className={cn(
-                    "flex w-full",
-                    message.role === "user" ? "justify-end" : "justify-start"
-                  )}
-                >
+              {messages.map((message) => {
+                // Skip system messages from display
+                if (message.role === "system") return null;
+                
+                return (
                   <div
+                    key={message.id}
                     className={cn(
-                      "max-w-[80%] rounded-lg px-4 py-3 shadow-xs",
-                      message.role === "user"
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted"
+                      "flex w-full",
+                      message.role === "user" ? "justify-end" : "justify-start"
                     )}
                   >
-                    <p className="text-sm whitespace-pre-wrap">
-                      {message.content}
-                    </p>
-                    <p
+                    <div
                       className={cn(
-                        "mt-1 text-xs",
+                        "max-w-[80%] rounded-lg px-4 py-3 shadow-xs",
                         message.role === "user"
-                          ? "text-primary-foreground/70"
-                          : "text-muted-foreground"
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-muted"
                       )}
                     >
-                      {message.timestamp.toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </p>
+                      <p className="text-sm whitespace-pre-wrap">
+                        {message.content}
+                      </p>
+                      <p
+                        className={cn(
+                          "mt-1 text-xs",
+                          message.role === "user"
+                            ? "text-primary-foreground/70"
+                            : "text-muted-foreground"
+                        )}
+                      >
+                        {message.timestamp.toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
               {isLoading && (
                 <div className="flex w-full justify-start">
                   <div className="flex items-center gap-2 rounded-lg bg-muted px-4 py-3 shadow-xs">
                     <IconLoader2 className="!size-4 animate-spin" />
                     <span className="text-sm text-muted-foreground">
-                      Thinking...
+                      Answering...
                     </span>
                   </div>
                 </div>
               )}
+              {/* Scroll anchor */}
+              <div ref={messagesEndRef} />
             </div>
           </ScrollArea>
         )}

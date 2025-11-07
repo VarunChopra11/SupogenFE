@@ -31,6 +31,7 @@ interface PlaygroundSidebarProps {
   selectedServerId?: string;
   selectedThreadId?: string;
   isCollapsed?: boolean;
+  isLoadingServers?: boolean;
   onToggleCollapse?: () => void;
   onServerChange: (serverId: string) => void;
   onThreadSelect: (threadId: string) => void;
@@ -43,6 +44,7 @@ export function PlaygroundSidebar({
   selectedServerId,
   selectedThreadId,
   isCollapsed = false,
+  isLoadingServers = false,
   onToggleCollapse,
   onServerChange,
   onThreadSelect,
@@ -64,16 +66,28 @@ export function PlaygroundSidebar({
             <>
               {/* Server Selector */}
               <div className="border-b p-4">
-                <Select value={selectedServerId} onValueChange={onServerChange}>
+                <Select 
+                  value={selectedServerId} 
+                  onValueChange={onServerChange}
+                  disabled={isLoadingServers}
+                >
                   <SelectTrigger className="w-full" style={{ backgroundColor: "#FFFFFF" }}>
-                    <SelectValue placeholder="Select server..." />
+                    <SelectValue placeholder={isLoadingServers ? "Loading servers..." : "Select server..."} />
                   </SelectTrigger>
                   <SelectContent>
-                    {servers.map((server) => (
-                      <SelectItem key={server.id} value={server.id}>
-                        {server.name}
-                      </SelectItem>
-                    ))}
+                    <ScrollArea className="h-[300px]">
+                      {servers.length === 0 && !isLoadingServers ? (
+                        <div className="p-2 text-sm text-muted-foreground text-center">
+                          No servers available
+                        </div>
+                      ) : (
+                        servers.map((server) => (
+                          <SelectItem key={server.id} value={server.id}>
+                            {server.name}
+                          </SelectItem>
+                        ))
+                      )}
+                    </ScrollArea>
                   </SelectContent>
                 </Select>
               </div>
