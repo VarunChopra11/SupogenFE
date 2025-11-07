@@ -323,6 +323,7 @@ export default function PlaygroundPage() {
   return (
     <ProtectedRoute>
       <SidebarProvider
+        className="h-screen overflow-hidden"
         style={
           {
             "--sidebar-width": "calc(var(--spacing) * 72)",
@@ -331,22 +332,24 @@ export default function PlaygroundPage() {
         }
       >
         <AppSidebar variant="inset" />
-        <SidebarInset>
+        <SidebarInset className="flex flex-col h-screen overflow-hidden">
           <SiteHeader />
-          <div className="flex h-[calc(100vh-var(--header-height))] flex-1">
+          <div className="flex h-[calc(100vh-var(--header-height))] flex-1 relative">
             {/* Internal Playground Sidebar */}
-            <PlaygroundSidebar
-              servers={servers}
-              chatThreads={chatThreads}
-              selectedServerId={selectedServerId}
-              selectedThreadId={selectedThreadId}
-              isCollapsed={isSidebarCollapsed}
-              onToggleCollapse={handleToggleSidebar}
-              onServerChange={handleServerChange}
-              onThreadSelect={handleThreadSelect}
-              onNewThread={handleNewThread}
-              isLoadingServers={isLoadingServers}
-            />
+            <div className="relative" style={{ overflow: 'visible' }}>
+              <PlaygroundSidebar
+                servers={servers}
+                chatThreads={chatThreads}
+                selectedServerId={selectedServerId}
+                selectedThreadId={selectedThreadId}
+                isCollapsed={isSidebarCollapsed}
+                onToggleCollapse={handleToggleSidebar}
+                onServerChange={handleServerChange}
+                onThreadSelect={handleThreadSelect}
+                onNewThread={handleNewThread}
+                isLoadingServers={isLoadingServers}
+              />
+            </div>
 
             {/* Chat Area */}
             <ChatArea

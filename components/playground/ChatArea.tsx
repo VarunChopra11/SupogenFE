@@ -84,11 +84,11 @@ export function ChatArea({
   const showEmptyState = !threadId || visibleMessages.length === 0;
 
   return (
-    <div className="flex h-full flex-1 flex-col">
+    <div className="flex h-full flex-1 flex-col overflow-hidden">
       {/* Chat Messages Area */}
       <div className="flex-1 overflow-hidden">
         {showEmptyState ? (
-          <div className="flex h-full flex-col items-center justify-center px-4">
+          <div className="flex h-full flex-col items-center justify-center px-4 overflow-y-auto">
             {/* Welcome Message */}
             <div className="mb-8 text-center">
               <h2 className="mb-2 text-3xl font-semibold">Hello there!</h2>
@@ -181,7 +181,7 @@ export function ChatArea({
       </div>
 
       {/* Chat Input - Fixed at Bottom */}
-      <div className="border-t bg-background p-4">
+      <div className="border-t bg-background p-4 flex-shrink-0">
         <div className="mx-auto flex w-full max-w-3xl items-center gap-2">
           <Input
             value={inputValue}

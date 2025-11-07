@@ -52,12 +52,12 @@ export function PlaygroundSidebar({
 }: PlaygroundSidebarProps) {
   return (
     <>
-      {/* Wrapper for sidebar and toggle button */}
-      <div className="relative flex h-full">
+      {/* Wrapper for sidebar and toggle button - overflow-visible to show button */}
+      <div className="relative flex h-full" style={{ overflow: 'visible' }}>
         {/* Sidebar Container */}
         <div
           className={cn(
-            "flex h-full flex-col border-r transition-all duration-300",
+            "flex h-full flex-col border-r transition-all duration-300 overflow-hidden relative",
             isCollapsed ? "w-0 overflow-hidden border-r-0" : "w-[250px]"
           )}
           style={{ backgroundColor: isCollapsed ? "transparent" : "#FAFAFA" }}
@@ -65,7 +65,7 @@ export function PlaygroundSidebar({
           {!isCollapsed && (
             <>
               {/* Server Selector */}
-              <div className="border-b p-4">
+              <div className="border-b p-4 flex-shrink-0">
                 <Select 
                   value={selectedServerId} 
                   onValueChange={onServerChange}
@@ -93,7 +93,7 @@ export function PlaygroundSidebar({
               </div>
 
               {/* Thread List */}
-              <ScrollArea className="flex-1">
+              <ScrollArea className="flex-1 overflow-hidden">
                 <div className="flex flex-col gap-1 p-2">
                   {/* New Thread Button */}
                   <Button
@@ -145,27 +145,45 @@ export function PlaygroundSidebar({
           )}
         </div>
 
-        {/* Always Visible Toggle Button */}
+        {/* Always Visible Toggle Button - Positioned on the right edge */}
         {onToggleCollapse && (
-          <Button
-            variant="outline"
-            size="icon-sm"
-            onClick={onToggleCollapse}
+          <div
             className={cn(
-              "absolute top-1/2 -translate-y-1/2 z-20 transition-all",
-              "rounded-r-lg rounded-l-none border-l-0",
-              "shadow-md bg-background hover:bg-accent",
-              "h-12 w-6",
-              isCollapsed ? "left-0 rounded-l-lg border-l" : "-right-6"
+              "absolute top-1/2 -translate-y-1/2 z-50 transition-all duration-300",
+              isCollapsed ? "left-0" : "left-[250px]"
             )}
-            title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            style={{ pointerEvents: 'auto' }}
           >
-            {isCollapsed ? (
-              <IconChevronRight className="!size-4" />
-            ) : (
-              <IconChevronLeft className="!size-4" />
-            )}
-          </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={onToggleCollapse}
+              className={cn(
+                "shadow-md hover:shadow-lg active:shadow-sm",
+                "h-16 w-8 rounded-r-2xl",
+                "border border-border/60 bg-gradient-to-r from-background to-muted/30",
+                "hover:from-accent hover:to-accent/80",
+                "transition-all duration-300 ease-in-out",
+                "flex items-center justify-center",
+                "backdrop-blur-sm",
+                "group",
+                isCollapsed 
+                  ? "rounded-l-2xl border-l" 
+                  : "rounded-l-none border-l-0"
+              )}
+              title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+              style={{ 
+                minWidth: '2rem',
+                minHeight: '4rem'
+              }}
+            >
+              {isCollapsed ? (
+                <IconChevronRight className="!size-4 transition-transform group-hover:translate-x-0.5" />
+              ) : (
+                <IconChevronLeft className="!size-4 transition-transform group-hover:-translate-x-0.5" />
+              )}
+            </Button>
+          </div>
         )}
       </div>
     </>
