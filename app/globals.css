@@ -52,8 +52,8 @@
   --color-gray-1000: var(--ds-gray-1000);
   --color-gray-alpha-400: var(--ds-gray-alpha-400);
   --color-background-100: var(--ds-background-100);
-  --animate-fade-in: fade-in 1s ease-out forwards;
-  --animate-fade-out: fade-out 1s ease-out forwards;
+  --animate-fade-in: chat-fade-in 0.4s ease-out;
+  --animate-fade-out: chat-fade-out 0.3s ease-out;
   --color-ds-background-100: var(----ds-background-100);
   --color-ds-gray-alpha-400: var(----ds-gray-alpha-400);
   --color-ds-gray-1000: var(----ds-gray-1000);
@@ -64,40 +64,22 @@
   --color-ds-red-100: var(----ds-red-100);
   --color-ds-blue-900: var(----ds-blue-900);
   --color-ds-blue-100: var(----ds-blue-100);
-  @keyframes fade-in {
+  @keyframes chat-fade-in {
     0% {
       opacity: 0;
-      scale: 0.5;
-    }
-    20% {
-      opacity: 1;
-      scale: 1;
-    }
-    80% {
-      opacity: 1;
-      scale: 1;
+      transform: translateY(8px);
     }
     100% {
-      opacity: 0;
-      scale: 0.5;
+      opacity: 1;
+      transform: translateY(0);
     }
   }
-  @keyframes fade-out {
+  @keyframes chat-fade-out {
     0% {
       opacity: 1;
-      scale: 1;
-    }
-    20% {
-      opacity: 0;
-      scale: 0.5;
-    }
-    80% {
-      opacity: 0;
-      scale: 0.5;
     }
     100% {
-      opacity: 1;
-      scale: 1;
+      opacity: 0;
     }
   }
 }
@@ -207,6 +189,18 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .animate-fade-in {
+    animation: chat-fade-in 0.4s ease-out;
+    will-change: opacity, transform;
+  }
+  .animate-fade-out {
+    animation: chat-fade-out 0.3s ease-out;
+    will-change: opacity;
+  }
+}
+
 /* THESE ARE FOR CLERK */
 .cl-formButtonPrimary {
   background-color: #050505;
