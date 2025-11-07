@@ -3,6 +3,8 @@
 import {
   AssistantRuntimeProvider,
   AttachmentAdapter,
+  ChatModelRunOptions,
+  ChatModelRunResult,
   CompleteAttachment,
   PendingAttachment,
   useLocalRuntime,
@@ -81,7 +83,10 @@ class VisionImageAdapter implements AttachmentAdapter {
 }
 
 const MyModelAdapter: ChatModelAdapter = {
-  async run({ messages, abortSignal }) {
+  async run({
+    messages,
+    abortSignal,
+  }: ChatModelRunOptions): Promise<ChatModelRunResult> {
     // Convert messages to format expected by your vision-capable API
     const formattedMessages = messages.map((msg) => {
       if (
@@ -127,7 +132,9 @@ const MyModelAdapter: ChatModelAdapter = {
 
     if (!res1.body) {
       console.error("No response body");
-      return;
+      return {
+        content: [{ type: "text", text: "there is an error" }],
+      };
     }
 
     const reader = res1.body.getReader();
