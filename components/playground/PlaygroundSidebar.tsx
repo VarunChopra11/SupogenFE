@@ -50,6 +50,12 @@ export function PlaygroundSidebar({
   onThreadSelect,
   onNewThread,
 }: PlaygroundSidebarProps) {
+  // Function to truncate text to a specific character limit
+  const truncateText = (text: string, maxLength: number = 25): string => {
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + '...';
+  };
+
   return (
     <>
       {/* Wrapper for sidebar and toggle button - overflow-visible to show button */}
@@ -117,23 +123,35 @@ export function PlaygroundSidebar({
                             ? "bg-primary text-primary-foreground"
                             : "hover:bg-accent hover:text-accent-foreground"
                         )}
+                        style={{ maxWidth: '100%' }}
                       >
-                        <div className="flex w-full items-center gap-2">
+                        <div className="flex w-full items-center gap-2" style={{ maxWidth: '100%' }}>
                           <IconMessageCircle className="!size-4 shrink-0" />
-                          <span className="truncate text-sm font-medium">
-                            {thread.title}
+                          <span className="text-sm font-medium block" style={{ 
+                            maxWidth: 'calc(100% - 2rem)',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap'
+                          }}>
+                            {truncateText(thread.title, 25)}
                           </span>
                         </div>
                         {thread.lastMessage && (
                           <span
                             className={cn(
-                              "line-clamp-1 w-full text-xs",
+                              "text-xs block",
                               selectedThreadId === thread.id
                                 ? "text-primary-foreground/80"
                                 : "text-muted-foreground"
                             )}
+                            style={{ 
+                              maxWidth: '100%',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              whiteSpace: 'nowrap'
+                            }}
                           >
-                            {thread.lastMessage}
+                            {truncateText(thread.lastMessage, 30)}
                           </span>
                         )}
                       </button>

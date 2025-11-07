@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { MarkdownRenderer } from "./MarkdownRenderer";
 
 interface Message {
   id: string;
@@ -90,30 +91,40 @@ export function ChatArea({ threadId, messages, isLoading = false, onSendMessage 
           </div>
         ) : (
           <ScrollArea className="h-full">
-            <div className="flex flex-col gap-4 p-6">
+            <div className="flex flex-col gap-6 p-6 pb-8">
               {visibleMessages.map((message) => (
                 <div
                   key={message.id}
                   className={cn(
-                    "flex w-full animate-fade-in",
+                    "flex w-full animate-fade-in gap-3",
                     message.role === "user" ? "justify-end" : "justify-start"
                   )}
                 >
+                  {message.role === "assistant" && (
+                    <div className="flex-shrink-0 mt-1">
+                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold text-sm">
+                        AI
+                      </div>
+                    </div>
+                  )}
                   <div
                     className={cn(
-                      "max-w-[78%] rounded-2xl px-5 py-3 shadow-md transition-all duration-300",
+                      "max-w-[75%] rounded-2xl px-5 py-4 shadow-sm border transition-all duration-300",
                       message.role === "user"
-                        ? "bg-primary text-primary-foreground rounded-br-none"
-                        : "bg-muted rounded-bl-none"
+                        ? "bg-primary text-primary-foreground border-primary/20 rounded-br-md"
+                        : "bg-card border-border rounded-bl-md"
                     )}
                   >
-                    <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                    <MarkdownRenderer
+                      content={message.content}
+                      isUser={message.role === "user"}
+                    />
                     <p
                       className={cn(
-                        "mt-1 text-xs",
+                        "mt-3 text-[10px] font-medium",
                         message.role === "user"
-                          ? "text-primary-foreground/60"
-                          : "text-muted-foreground"
+                          ? "text-primary-foreground/50"
+                          : "text-muted-foreground/50"
                       )}
                     >
                       {message.timestamp.toLocaleTimeString([], {
@@ -122,14 +133,30 @@ export function ChatArea({ threadId, messages, isLoading = false, onSendMessage 
                       })}
                     </p>
                   </div>
+                  {message.role === "user" && (
+                    <div className="flex-shrink-0 mt-1">
+                      <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-semibold text-sm">
+                        U
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
 
               {isLoading && (
-                <div className="flex w-full justify-start animate-fade-in">
-                  <div className="flex items-center gap-2 rounded-xl bg-muted px-4 py-3 shadow-md">
-                    <IconLoader2 className="!size-4 animate-spin" />
-                    <span className="text-sm text-muted-foreground">Thinking...</span>
+                <div className="flex w-full justify-start animate-fade-in gap-3">
+                  <div className="flex-shrink-0 mt-1">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold text-sm">
+                      AI
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 rounded-2xl rounded-bl-md bg-card border border-border px-5 py-4 shadow-sm">
+                    <div className="flex gap-1">
+                      <span className="w-2 h-2 bg-primary/60 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                      <span className="w-2 h-2 bg-primary/60 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                      <span className="w-2 h-2 bg-primary/60 rounded-full animate-bounce"></span>
+                    </div>
+                    <span className="text-sm text-muted-foreground ml-2">Thinking...</span>
                   </div>
                 </div>
               )}
