@@ -8,6 +8,7 @@ import {
   PencilIcon,
   RefreshCwIcon,
   Square,
+  Wallet,
 } from "lucide-react";
 
 import {
@@ -34,6 +35,7 @@ import {
 } from "@/components/assistant-ui/attachment";
 
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 export const Thread: FC = () => {
   return (
@@ -45,6 +47,15 @@ export const Thread: FC = () => {
             ["--thread-max-width" as string]: "44rem",
           }}
         >
+          <div className="flex justify-end">
+            <Link href="/dashboard" className="inline-flex">
+              <Button variant="outline" className="cursor-pointer gap-2">
+                <Wallet className="h-4 w-4 opacity-80" />
+                Back to Dashboard
+              </Button>
+            </Link>
+          </div>
+
           <ThreadPrimitive.Viewport className="aui-thread-viewport relative flex flex-1 flex-col overflow-x-auto overflow-y-scroll px-4">
             <ThreadPrimitive.If empty>
               <ThreadWelcome />
@@ -365,7 +376,7 @@ const BranchPicker: FC<BranchPickerPrimitive.Root.Props> = ({
       hideWhenSingleBranch
       className={cn(
         "aui-branch-picker-root mr-2 -ml-2 inline-flex items-center text-xs text-muted-foreground",
-        className,
+        className
       )}
       {...rest}
     >

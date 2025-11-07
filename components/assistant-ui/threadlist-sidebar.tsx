@@ -40,9 +40,14 @@ type Server = {
   member_count: number;
 };
 
+type ThreadListSidebarProps = React.ComponentProps<typeof Sidebar> & {
+  setSelectedServer: (server: any) => void;
+};
+
 export function ThreadListSidebar({
+  setSelectedServer,
   ...props
-}: React.ComponentProps<typeof Sidebar>) {
+}: ThreadListSidebarProps) {
   const { user } = useBackendAuth();
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
@@ -62,6 +67,7 @@ export function ThreadListSidebar({
           method: "GET",
           signal: controller.signal,
         });
+
         if (!res.ok) throw new Error(`Failed to load servers (${res.status})`);
         const data = (await res.json()) as { servers: Server[] };
         if (!active) return;
@@ -122,6 +128,7 @@ export function ThreadListSidebar({
                                     currentValue === value ? "" : currentValue
                                   );
                                   setOpen(false);
+                                  setSelectedServer(server.server_id);
                                 }}
                               >
                                 {server.server_name}
