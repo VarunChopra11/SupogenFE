@@ -30,11 +30,6 @@ const data = {
       icon: IconDashboard,
     },
     {
-      title: "Playground",
-      url: "/playground",
-      icon: IconListDetails,
-    },
-    {
       title: "Add Context",
       url: "/context",
       icon: IconListDetails,
