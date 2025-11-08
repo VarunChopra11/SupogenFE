@@ -28,9 +28,9 @@ export default function RootLayout({
     <ClerkProvider
       afterSignOutUrl="https://supogen.com"
     >
-      <html lang="en" className="h-full overflow-hidden">
+      <html lang="en" className="h-full">
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased h-full overflow-hidden`}
+          className={`${geistSans.variable} ${geistMono.variable} antialiased h-full`}
         >
           <BackendAuthProvider>
             {children}
