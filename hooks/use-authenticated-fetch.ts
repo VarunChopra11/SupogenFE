@@ -3,7 +3,7 @@
 import { useBackendAuth } from "@/context/backend-auth";
 import { useCallback } from "react";
 
-interface FetchOptions extends RequestInit {
+export interface FetchOptions extends RequestInit {
   skipAuth?: boolean;
 }
 

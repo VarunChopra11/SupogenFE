@@ -6,6 +6,7 @@ import {
   IconDashboard,
   IconListDetails,
   IconInnerShadowTop,
+  IconMessageCircle,
 } from "@tabler/icons-react";
 
 import { usePathname } from "next/navigation";
@@ -32,7 +33,7 @@ const data = {
     {
       title: "Playground",
       url: "/playground",
-      icon: IconListDetails,
+      icon: IconMessageCircle,
     },
     {
       title: "Add Context",

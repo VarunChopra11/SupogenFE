@@ -52,8 +52,8 @@
   --color-gray-1000: var(--ds-gray-1000);
   --color-gray-alpha-400: var(--ds-gray-alpha-400);
   --color-background-100: var(--ds-background-100);
-  --animate-fade-in: fade-in 1s ease-out forwards;
-  --animate-fade-out: fade-out 1s ease-out forwards;
+  --animate-fade-in: chat-fade-in 0.4s ease-out;
+  --animate-fade-out: chat-fade-out 0.3s ease-out;
   --color-ds-background-100: var(----ds-background-100);
   --color-ds-gray-alpha-400: var(----ds-gray-alpha-400);
   --color-ds-gray-1000: var(----ds-gray-1000);
@@ -64,40 +64,22 @@
   --color-ds-red-100: var(----ds-red-100);
   --color-ds-blue-900: var(----ds-blue-900);
   --color-ds-blue-100: var(----ds-blue-100);
-  @keyframes fade-in {
+  @keyframes chat-fade-in {
     0% {
       opacity: 0;
-      scale: 0.5;
-    }
-    20% {
-      opacity: 1;
-      scale: 1;
-    }
-    80% {
-      opacity: 1;
-      scale: 1;
+      transform: translateY(8px);
     }
     100% {
-      opacity: 0;
-      scale: 0.5;
+      opacity: 1;
+      transform: translateY(0);
     }
   }
-  @keyframes fade-out {
+  @keyframes chat-fade-out {
     0% {
       opacity: 1;
-      scale: 1;
-    }
-    20% {
-      opacity: 0;
-      scale: 0.5;
-    }
-    80% {
-      opacity: 0;
-      scale: 0.5;
     }
     100% {
-      opacity: 1;
-      scale: 1;
+      opacity: 0;
     }
   }
 }
@@ -207,7 +189,239 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .animate-fade-in {
+    animation: chat-fade-in 0.4s ease-out;
+    will-change: opacity, transform;
+  }
+  .animate-fade-out {
+    animation: chat-fade-out 0.3s ease-out;
+    will-change: opacity;
+  }
+}
+
 /* THESE ARE FOR CLERK */
 .cl-formButtonPrimary {
   background-color: #050505;
+}
+
+/* Markdown Content Styling */
+.markdown-content {
+  line-height: 1.7;
+}
+
+.markdown-content > *:first-child {
+  margin-top: 0 !important;
+}
+
+.markdown-content > *:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* Improve code block styling */
+.markdown-content pre {
+  margin: 1rem 0;
+  overflow-x: auto;
+  background-color: hsl(var(--muted)) !important;
+  border: 1px solid hsl(var(--border));
+}
+
+.markdown-content pre code {
+  display: block;
+  padding: 0;
+  background: transparent !important;
+  color: hsl(var(--foreground)) !important;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+/* Ensure code has visible text */
+.markdown-content code {
+  color: hsl(var(--foreground));
+}
+
+.markdown-content pre code {
+  color: hsl(var(--foreground)) !important;
+}
+
+/* Inline code styling */
+.markdown-content :not(pre) > code {
+  font-size: 0.875em;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Ensure inline code in user messages has good contrast */
+.markdown-content code:not(pre code) {
+  padding: 0.2em 0.4em;
+  border-radius: 0.25rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+/* Table styling improvements */
+.markdown-content table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.markdown-content table thead tr {
+  background-color: hsl(var(--muted) / 0.3);
+}
+
+.markdown-content table tbody tr:hover {
+  background-color: hsl(var(--muted) / 0.2);
+}
+
+/* Blockquote styling */
+.markdown-content blockquote {
+  quotes: "\201C""\201D""\2018""\2019";
+}
+
+/* List styling improvements */
+.markdown-content ul ul,
+.markdown-content ol ul,
+.markdown-content ul ol,
+.markdown-content ol ol {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Link hover effects */
+.markdown-content a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: all 0.2s ease;
+}
+
+.markdown-content a:hover {
+  text-decoration-thickness: 2px;
+}
+
+/* Image improvements */
+.markdown-content img {
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+/* Horizontal rule */
+.markdown-content hr {
+  margin: 1.5rem 0;
+}
+
+/* Task list styling */
+.markdown-content input[type="checkbox"] {
+  margin-right: 0.5rem;
+  cursor: pointer;
+}
+
+/* Syntax highlighting customization - theme aware */
+.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 0;
+  background: hsl(var(--muted)) !important;
+  color: hsl(var(--foreground)) !important;
+}
+
+/* Force visible text in code blocks */
+pre code.hljs,
+pre code[class*="language-"],
+.markdown-content pre code {
+  color: hsl(var(--foreground)) !important;
+  background: transparent !important;
+}
+
+/* Ensure code blocks in user messages (with primary background) are still visible */
+.prose-invert pre,
+.prose-invert pre code {
+  background: hsl(var(--muted)) !important;
+  color: hsl(var(--foreground)) !important;
+}
+
+.prose-invert code:not(pre code) {
+  background: hsl(var(--muted)) !important;
+  color: hsl(var(--foreground)) !important;
+}
+
+/* Light mode syntax highlighting */
+.hljs-comment,
+.hljs-quote {
+  color: hsl(var(--muted-foreground)) !important;
+  font-style: italic !important;
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-type {
+  color: hsl(var(--primary)) !important;
+  font-weight: 600 !important;
+}
+
+.hljs-string,
+.hljs-subst {
+  color: hsl(var(--chart-2)) !important;
+}
+
+.hljs-number,
+.hljs-literal,
+.hljs-variable,
+.hljs-template-variable {
+  color: hsl(var(--chart-1)) !important;
+}
+
+.hljs-title,
+.hljs-title.class_,
+.hljs-title.function_ {
+  color: hsl(var(--primary)) !important;
+  font-weight: 600 !important;
+}
+
+.hljs-params {
+  color: hsl(var(--foreground)) !important;
+}
+
+.hljs-attr,
+.hljs-attribute {
+  color: hsl(var(--chart-3)) !important;
+}
+
+.hljs-regexp,
+.hljs-link {
+  color: hsl(var(--chart-4)) !important;
+}
+
+.hljs-meta {
+  color: hsl(var(--chart-5)) !important;
+}
+
+.hljs-tag {
+  color: hsl(var(--chart-3)) !important;
+}
+
+.hljs-name {
+  color: hsl(var(--primary)) !important;
+}
+
+.hljs-bullet,
+.hljs-code {
+  color: hsl(var(--chart-2)) !important;
+}
+
+.hljs-emphasis {
+  font-style: italic !important;
+}
+
+.hljs-strong {
+  font-weight: bold !important;
+}
+
+.hljs-deletion {
+  color: hsl(var(--destructive)) !important;
+  background-color: hsl(var(--destructive) / 0.1) !important;
+}
+
+.hljs-addition {
+  color: hsl(var(--chart-3)) !important;
+  background-color: hsl(var(--chart-3) / 0.1) !important;
 }

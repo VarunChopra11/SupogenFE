@@ -80,13 +80,16 @@ export default function Page() {
 
     try {
       setSubmitLoading(true);
-  setEmbedSubmitting(true);
+      setEmbedSubmitting(true);
       const res = await authenticatedFetch("/documents/embed_docs", {
         method: "POST",
-        body: JSON.stringify({ document_url: url, server_id: selectedServerId }),
+        body: JSON.stringify({
+          document_url: url,
+          server_id: selectedServerId,
+        }),
       });
-  // Hide the overlay as soon as the POST responds (success or error)
-  setEmbedSubmitting(false);
+      // Hide the overlay as soon as the POST responds (success or error)
+      setEmbedSubmitting(false);
       if (!res.ok) {
         const text = await res.text();
         throw new Error(text || `Failed to embed document (${res.status})`);
@@ -113,8 +116,8 @@ export default function Page() {
         setDocumentsLoading(false);
       }
     } catch (e: any) {
-  // Ensure overlay is hidden on error as well
-  setEmbedSubmitting(false);
+      // Ensure overlay is hidden on error as well
+      setEmbedSubmitting(false);
       setSubmitError(e?.message || "Failed to submit document.");
     } finally {
       setSubmitLoading(false);
@@ -135,8 +138,11 @@ export default function Page() {
           method: "GET",
           signal: controller.signal,
         });
+
         if (!res.ok) throw new Error(`Failed to load servers (${res.status})`);
         const data = (await res.json()) as { servers: Server[] };
+        console.log(data);
+
         if (!active) return;
         setServers(Array.isArray(data?.servers) ? data.servers : []);
       } catch (e: any) {
@@ -223,9 +229,12 @@ export default function Page() {
                     <div className="text-sm text-red-500">{serversError}</div>
                   )}
                   {!serversLoading && !serversError && servers.length === 0 && (
-                    <div className="text-sm text-muted-foreground">No servers found.</div>
+                    <div className="text-sm text-muted-foreground">
+                      No servers found.
+                    </div>
                   )}
-                  {!serversLoading && !serversError &&
+                  {!serversLoading &&
+                    !serversError &&
                     servers.map((s) => {
                       const selected = s.server_id === selectedServerId;
                       return (
@@ -235,10 +244,14 @@ export default function Page() {
                           onClick={() => setSelectedServerId(s.server_id)}
                           className={
                             "text-left min-w-[220px] p-4 border rounded-lg bg-white/50 hover:bg-white transition-colors shadow-sm " +
-                            (selected ? " ring-2 ring-blue-500" : " border-gray-200")
+                            (selected
+                              ? " ring-2 ring-blue-500"
+                              : " border-gray-200")
                           }
                         >
-                          <div className="font-medium line-clamp-1">{s.server_name}</div>
+                          <div className="font-medium line-clamp-1">
+                            {s.server_name}
+                          </div>
                           <div className="text-xs text-muted-foreground mt-1">
                             Members: {s.member_count}
                           </div>
@@ -282,7 +295,9 @@ export default function Page() {
                     disabled
                     onChange={() => {}}
                   />
-                  <p className="text-sm text-muted-foreground">PDF uploads are temporarily disabled. Please use a URL.</p>
+                  <p className="text-sm text-muted-foreground">
+                    PDF uploads are temporarily disabled. Please use a URL.
+                  </p>
                 </div>
 
                 {/* Submit Button */}
@@ -299,7 +314,9 @@ export default function Page() {
                     <p className="mt-2 text-sm text-red-500">{submitError}</p>
                   )}
                   {submitSuccess && (
-                    <p className="mt-2 text-sm text-green-600">{submitSuccess}</p>
+                    <p className="mt-2 text-sm text-green-600">
+                      {submitSuccess}
+                    </p>
                   )}
                 </div>
               </CardContent>
@@ -346,13 +363,13 @@ export default function Page() {
                               {idx + 1}
                             </div>
                             <div className="min-w-0 flex-1">
-                                <a
+                              <a
                                 href={doc.document_url}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="flex items-center h-full truncate text-sm text-blue-600 hover:underline dark:text-blue-400"
                                 title={doc.document_url}
-                                >
+                              >
                                 {doc.document_url}
                               </a>
                             </div>
