@@ -119,6 +119,9 @@ importers:
       framer-motion:
         specifier: ^12.23.24
         version: 12.23.24(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      highlight.js:
+        specifier: ^11.11.1
+        version: 11.11.1
       lucide-react:
         specifier: ^0.546.0
         version: 0.546.0(react@19.1.0)
