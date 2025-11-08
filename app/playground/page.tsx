@@ -8,6 +8,7 @@ import { ProtectedRoute } from "@/components/auth/protected-route";
 import { PlaygroundSidebar } from "@/components/playground/PlaygroundSidebar";
 import { ChatArea } from "@/components/playground/ChatArea";
 import { useAuthenticatedFetch } from "@/hooks/use-authenticated-fetch";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 // Types based on backend schema
 interface DiscordBotPermissions {
@@ -48,6 +49,7 @@ interface ChatThread {
 
 export default function PlaygroundPage() {
   const { authenticatedFetch, apiBaseUrl } = useAuthenticatedFetch();
+  const isMobile = useIsMobile();
   const [servers, setServers] = React.useState<Server[]>([]);
   const [isLoadingServers, setIsLoadingServers] = React.useState(true);
   const [selectedServerId, setSelectedServerId] = React.useState<
@@ -60,6 +62,13 @@ export default function PlaygroundPage() {
   const [messages, setMessages] = React.useState<Message[]>([]);
   const [isLoading, setIsLoading] = React.useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = React.useState(false);
+
+  // Auto-collapse sidebar on mobile
+  React.useEffect(() => {
+    if (isMobile) {
+      setIsSidebarCollapsed(true);
+    }
+  }, [isMobile]);
 
   // Fetch servers on component mount
   React.useEffect(() => {
@@ -327,15 +336,17 @@ export default function PlaygroundPage() {
         style={
           {
             "--sidebar-width": "calc(var(--spacing) * 72)",
-            "--header-height": "calc(var(--spacing) * 12)",
+            "--header-height": "3rem",
           } as React.CSSProperties
         }
       >
+        {/* Global App Sidebar - Now visible on all screen sizes */}
         <AppSidebar variant="inset" />
+        
         <SidebarInset className="flex flex-col h-screen overflow-hidden">
           <SiteHeader />
-          <div className="flex h-[calc(100vh-var(--header-height))] flex-1 relative">
-            {/* Internal Playground Sidebar */}
+          <div className="flex h-[calc(100vh-3rem)] md:h-[calc(100vh-var(--header-height))] flex-1 relative overflow-hidden">
+            {/* Internal Playground Sidebar - Responsive */}
             <div className="relative" style={{ overflow: 'visible' }}>
               <PlaygroundSidebar
                 servers={servers}
@@ -351,13 +362,15 @@ export default function PlaygroundPage() {
               />
             </div>
 
-            {/* Chat Area */}
-            <ChatArea
-              threadId={selectedThreadId}
-              messages={messages}
-              isLoading={isLoading}
-              onSendMessage={handleSendMessage}
-            />
+            {/* Chat Area - Full width on mobile, adjusted on desktop */}
+            <div className="flex-1 min-w-0">
+              <ChatArea
+                threadId={selectedThreadId}
+                messages={messages}
+                isLoading={isLoading}
+                onSendMessage={handleSendMessage}
+              />
+            </div>
           </div>
         </SidebarInset>
       </SidebarProvider>
