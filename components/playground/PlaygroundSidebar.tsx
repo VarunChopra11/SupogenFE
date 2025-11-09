@@ -1,7 +1,13 @@
 "use client";
 
 import * as React from "react";
-import { IconPlus, IconMessageCircle, IconChevronLeft, IconChevronRight, IconMenu2 } from "@tabler/icons-react";
+import {
+  IconPlus,
+  IconMessageCircle,
+  IconChevronLeft,
+  IconChevronRight,
+  IconMenu2,
+} from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
 import {
   Select,
@@ -54,11 +60,11 @@ export function PlaygroundSidebar({
 }: PlaygroundSidebarProps) {
   const isMobile = useIsMobile();
   const [isSheetOpen, setIsSheetOpen] = React.useState(false);
-  
+
   // Function to truncate text to a specific character limit
   const truncateText = (text: string, maxLength: number = 25): string => {
     if (text.length <= maxLength) return text;
-    return text.substring(0, maxLength) + '...';
+    return text.substring(0, maxLength) + "...";
   };
 
   // Handle thread selection and close sheet on mobile
@@ -82,23 +88,34 @@ export function PlaygroundSidebar({
     <>
       {/* Server Selector */}
       <div className="border-b p-4 flex-shrink-0">
-        <Select 
-          value={selectedServerId} 
+        <Select
+          value={selectedServerId}
           onValueChange={onServerChange}
           disabled={isLoadingServers}
         >
-          <SelectTrigger className="w-full" style={{ backgroundColor: "#FFFFFF" }}>
-            <SelectValue placeholder={isLoadingServers ? "Loading servers..." : "Select server..."} />
+          <SelectTrigger
+            className="w-full cursor-pointer"
+            style={{ backgroundColor: "#FFFFFF" }}
+          >
+            <SelectValue
+              placeholder={
+                isLoadingServers ? "Loading servers..." : "Select server..."
+              }
+            />
           </SelectTrigger>
           <SelectContent>
-            <ScrollArea className="h-[300px]">
+            <ScrollArea className="h-auto">
               {servers.length === 0 && !isLoadingServers ? (
                 <div className="p-2 text-sm text-muted-foreground text-center">
                   No servers available
                 </div>
               ) : (
                 servers.map((server) => (
-                  <SelectItem key={server.id} value={server.id}>
+                  <SelectItem
+                    key={server.id}
+                    value={server.id}
+                    className="cursor-pointer"
+                  >
                     {server.name}
                   </SelectItem>
                 ))
@@ -114,7 +131,7 @@ export function PlaygroundSidebar({
           {/* New Thread Button */}
           <Button
             variant="outline"
-            className="w-full justify-start gap-2 shadow-xs"
+            className="w-full justify-start gap-2 shadow-xs cursor-pointer"
             onClick={handleNewThread}
           >
             <IconPlus className="!size-4" />
@@ -122,27 +139,33 @@ export function PlaygroundSidebar({
           </Button>
 
           {/* Thread List */}
-          <div className="mt-2 flex flex-col gap-1">
+          <div className="mt-2 flex flex-col gap-1 ">
             {chatThreads.map((thread) => (
               <button
                 key={thread.id}
                 onClick={() => handleThreadSelect(thread.id)}
                 className={cn(
-                  "flex w-full flex-col items-start gap-1 rounded-md px-3 py-2 text-left transition-colors",
+                  "flex w-full flex-col items-start gap-1 rounded-md px-3 py-2 text-left transition-colors cursor-pointer",
                   selectedThreadId === thread.id
                     ? "bg-primary text-primary-foreground"
                     : "hover:bg-accent hover:text-accent-foreground"
                 )}
-                style={{ maxWidth: '100%' }}
+                style={{ maxWidth: "100%" }}
               >
-                <div className="flex w-full items-center gap-2" style={{ maxWidth: '100%' }}>
+                <div
+                  className="flex w-full items-center gap-2"
+                  style={{ maxWidth: "100%" }}
+                >
                   <IconMessageCircle className="!size-4 shrink-0" />
-                  <span className="text-sm font-medium block" style={{ 
-                    maxWidth: 'calc(100% - 2rem)',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap'
-                  }}>
+                  <span
+                    className="text-sm font-medium block"
+                    style={{
+                      maxWidth: "calc(100% - 2rem)",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
                     {truncateText(thread.title, 25)}
                   </span>
                 </div>
@@ -154,11 +177,11 @@ export function PlaygroundSidebar({
                         ? "text-primary-foreground/80"
                         : "text-muted-foreground"
                     )}
-                    style={{ 
-                      maxWidth: '100%',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap'
+                    style={{
+                      maxWidth: "100%",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
                     }}
                   >
                     {truncateText(thread.lastMessage, 30)}
@@ -190,14 +213,14 @@ export function PlaygroundSidebar({
               "flex items-center justify-center",
               "backdrop-blur-sm",
               "group",
-              isSheetOpen 
-                ? "left-[280px] rounded-l-none border-l-0" 
+              isSheetOpen
+                ? "left-[280px] rounded-l-none border-l-0"
                 : "left-0 rounded-l-2xl border-l"
             )}
             aria-label={isSheetOpen ? "Close menu" : "Open menu"}
-            style={{ 
-              minWidth: '2rem',
-              minHeight: '4rem'
+            style={{
+              minWidth: "2rem",
+              minHeight: "4rem",
             }}
           >
             {isSheetOpen ? (
@@ -208,7 +231,10 @@ export function PlaygroundSidebar({
           </Button>
         </SheetTrigger>
         <SheetContent side="left" className="w-[280px] p-0 flex flex-col">
-          <div className="flex-1 flex flex-col" style={{ backgroundColor: "#FAFAFA" }}>
+          <div
+            className="flex-1 flex flex-col"
+            style={{ backgroundColor: "#FAFAFA" }}
+          >
             <SidebarContent />
           </div>
         </SheetContent>
@@ -220,12 +246,14 @@ export function PlaygroundSidebar({
   return (
     <>
       {/* Wrapper for sidebar and toggle button - overflow-visible to show button */}
-      <div className="relative flex h-full" style={{ overflow: 'visible' }}>
+      <div className="relative flex h-full" style={{ overflow: "visible" }}>
         {/* Sidebar Container */}
         <div
           className={cn(
             "flex h-full flex-col border-r transition-all duration-300 overflow-hidden relative",
-            isCollapsed ? "w-0 overflow-hidden border-r-0" : "w-[250px] lg:w-[280px]"
+            isCollapsed
+              ? "w-0 overflow-hidden border-r-0"
+              : "w-[250px] lg:w-[280px]"
           )}
           style={{ backgroundColor: isCollapsed ? "transparent" : "#FAFAFA" }}
         >
@@ -239,7 +267,7 @@ export function PlaygroundSidebar({
               "absolute top-1/2 -translate-y-1/2 z-50 transition-all duration-300 hidden md:block",
               isCollapsed ? "left-0" : "left-[250px] lg:left-[280px]"
             )}
-            style={{ pointerEvents: 'auto' }}
+            style={{ pointerEvents: "auto" }}
           >
             <Button
               variant="outline"
@@ -253,15 +281,15 @@ export function PlaygroundSidebar({
                 "transition-all duration-300 ease-in-out",
                 "flex items-center justify-center",
                 "backdrop-blur-sm",
-                "group",
-                isCollapsed 
-                  ? "rounded-l-2xl border-l" 
+                "group cursor-pointer",
+                isCollapsed
+                  ? "rounded-l-2xl border-l"
                   : "rounded-l-none border-l-0"
               )}
               title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-              style={{ 
-                minWidth: '2rem',
-                minHeight: '4rem'
+              style={{
+                minWidth: "2rem",
+                minHeight: "4rem",
               }}
             >
               {isCollapsed ? (

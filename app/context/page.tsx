@@ -210,13 +210,13 @@ export default function Page() {
               <CardHeader>
                 <CardTitle>Select a Server</CardTitle>
               </CardHeader>
-              <CardContent className="flex flex-col gap-3">
+              <CardContent className="flex flex-col gap-3 ">
                 <div
-                  className="thin-scrollbar flex gap-3 overflow-x-auto pb-2 px-1"
+                  className="thin-scrollbar flex gap-3 overflow-x-auto pb-2 px-1 "
                   aria-busy={serversLoading}
                 >
                   {serversLoading && (
-                    <div className="flex gap-3">
+                    <div className="flex gap-3 ">
                       {Array.from({ length: 4 }).map((_, i) => (
                         <Skeleton
                           key={i}
@@ -243,7 +243,7 @@ export default function Page() {
                           type="button"
                           onClick={() => setSelectedServerId(s.server_id)}
                           className={
-                            "text-left min-w-[220px] p-4 border rounded-lg bg-white/50 hover:bg-white transition-colors shadow-sm " +
+                            "text-left min-w-[220px] p-4 border rounded-lg bg-white/50 hover:bg-white transition-colors shadow-sm  cursor-pointer" +
                             (selected
                               ? " ring-2 ring-blue-500"
                               : " border-gray-200")
@@ -305,7 +305,7 @@ export default function Page() {
                   <Button
                     onClick={handleSubmit}
                     disabled={isDisabled || submitLoading}
-                    className="w-full"
+                    className="w-full cursor-pointer"
                   >
                     <Upload className="w-4 h-4 mr-2" />
                     {submitLoading ? "Submitting..." : "Submit"}

@@ -68,17 +68,26 @@ export function NavUser() {
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground cursor-pointer"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user?.picture ?? undefined} alt={user?.name || user?.email || "User"} />
+                <AvatarImage
+                  src={user?.picture ?? undefined}
+                  alt={user?.name || user?.email || "User"}
+                />
                 <AvatarFallback className="rounded-lg">
-                  {(user?.name?.charAt(0) || user?.email?.charAt(0))?.toUpperCase() || "U"}
+                  {(
+                    user?.name?.charAt(0) || user?.email?.charAt(0)
+                  )?.toUpperCase() || "U"}
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user?.name || "User"}</span>
-                <span className="text-muted-foreground truncate text-xs">{user?.email}</span>
+                <span className="truncate font-medium">
+                  {user?.name || "User"}
+                </span>
+                <span className="text-muted-foreground truncate text-xs">
+                  {user?.email}
+                </span>
               </div>
               {/* <IconDotsVertical className="ml-auto size-4" /> */}
             </SidebarMenuButton>
@@ -109,14 +118,6 @@ export function NavUser() {
               <DropdownMenuItem onClick={handleAccountClick}>
                 <IconUserCircle />
                 Account
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleBillingClick}>
-                <IconCreditCard />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleNotificationsClick}>
-                <IconNotification />
-                Notifications
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />

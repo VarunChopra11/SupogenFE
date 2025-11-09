@@ -89,7 +89,9 @@ export default function AddBotPage() {
         const text = await res.text();
         throw new Error(text || `Failed with ${res.status}`);
       }
-      const data: TokenResponse = await res.json().catch(() => ({} as TokenResponse));
+      const data: TokenResponse = await res
+        .json()
+        .catch(() => ({} as TokenResponse));
       const newToken = extractToken(data);
       const expiryMs = computeExpiry(data);
       setToken(newToken);
@@ -152,24 +154,26 @@ export default function AddBotPage() {
                   <CardHeader>
                     <CardTitle>1. Invite the Discord Bot</CardTitle>
                     <CardDescription>
-                      Use this link to add the bot to your server with required permissions.
+                      Use this link to add the bot to your server with required
+                      permissions.
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <Label>Discord OAuth URL</Label>
                     <div className="rounded-md border bg-muted/50 p-2 overflow-hidden">
                       <div className="overflow-x-auto [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-muted-foreground/20">
-                      <code className="block min-w-max whitespace-pre text-xs sm:text-sm font-mono leading-6">
-                        {DISCORD_BOT_URL}
-                      </code>
+                        <code className="block min-w-max whitespace-pre text-xs sm:text-sm font-mono leading-6">
+                          {DISCORD_BOT_URL}
+                        </code>
                       </div>
                     </div>
 
                     {/* Centered buttons */}
                     <div className="flex justify-center items-center gap-3 flex-wrap">
                       <Button
-                        variant="outline"
+                        variant="outline "
                         onClick={() => handleCopy(DISCORD_BOT_URL)}
+                        className="cursor-pointer"
                       >
                         Copy Link
                       </Button>
@@ -191,20 +195,21 @@ export default function AddBotPage() {
                   <CardHeader>
                     <CardTitle>2. Get Secret Token</CardTitle>
                     <CardDescription>
-                      Use this short-lived token to authenticate the bot in your server.
+                      Use this short-lived token to authenticate the bot in your
+                      server.
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <Label className="mt-5.5 block">Secret Token</Label>
                     <div className="rounded-md border bg-muted/50 p-2 overflow-hidden">
                       <div className="overflow-x-auto [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-muted-foreground/20">
-                      {token ? (
-                        <code className="block min-w-max whitespace-pre text-xs sm:text-sm font-mono leading-6">
-                        {token}
-                        </code>
-                      ) : (
-                        <Input readOnly value="Generating..." />
-                      )}
+                        {token ? (
+                          <code className="block min-w-max whitespace-pre text-xs sm:text-sm font-mono leading-6">
+                            {token}
+                          </code>
+                        ) : (
+                          <Input readOnly value="Generating..." />
+                        )}
                       </div>
                     </div>
 
@@ -222,20 +227,36 @@ export default function AddBotPage() {
                         onClick={fetchToken}
                         disabled={loading}
                       >
-                        <RefreshCw className={`mr-2 h-4 w-4 ${loading ? "animate-spin" : ""}`} />
-                        {loading ? "Regenerating" : token ? "Regenerate" : "Generate"}
+                        <RefreshCw
+                          className={`mr-2 h-4 w-4 ${
+                            loading ? "animate-spin" : ""
+                          }`}
+                        />
+                        {loading
+                          ? "Regenerating"
+                          : token
+                          ? "Regenerate"
+                          : "Generate"}
                       </Button>
                       <div className="flex items-center gap-1 text-sm text-muted-foreground">
                         <Clock className="h-4 w-4" />
                         <span
-                          className={expired ? "text-destructive font-medium" : "text-foreground"}
+                          className={
+                            expired
+                              ? "text-destructive font-medium"
+                              : "text-foreground"
+                          }
                         >
                           {formattedRemaining}
                         </span>
                       </div>
                     </div>
 
-                    {error && <p className="text-sm text-destructive text-center">{error}</p>}
+                    {error && (
+                      <p className="text-sm text-destructive text-center">
+                        {error}
+                      </p>
+                    )}
                   </CardContent>
                 </Card>
 
@@ -249,10 +270,14 @@ export default function AddBotPage() {
                   </CardHeader>
                   <CardContent className="space-y-3 text-sm">
                     <ol className="list-decimal space-y-2 pl-5">
-                      <li>Open the provided Discord link and add the bot to your server or channels.</li>
+                      <li>
+                        Open the provided Discord link and add the bot to your
+                        server or channels.
+                      </li>
                       <li>Copy your secret token.</li>
                       <li>
-                        In your Discord server, within 5 minutes of token generation, send the command:
+                        In your Discord server, within 5 minutes of token
+                        generation, send the command:
                         <div className="mt-2 rounded-md bg-muted p-2">
                           <code className="whitespace-pre-wrap break-all">
                             /authenticate {"<your-secret-token>"}
@@ -268,7 +293,8 @@ export default function AddBotPage() {
 
               <Separator className="my-8" />
               <div className="text-xs text-muted-foreground text-center">
-                Secret Token is valid for 5 minutes. Regenerate if expired or compromised.
+                Secret Token is valid for 5 minutes. Regenerate if expired or
+                compromised.
               </div>
             </div>
           </div>

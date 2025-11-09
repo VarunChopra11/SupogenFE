@@ -32,7 +32,7 @@ interface Server {
   name: string;
 }
 
-interface Message {
+export interface MessageType {
   id: string;
   role: "user" | "assistant" | "system";
   content: string;
@@ -59,9 +59,13 @@ export default function PlaygroundPage() {
     string | undefined
   >();
   const [chatThreads, setChatThreads] = React.useState<ChatThread[]>([]);
-  const [messages, setMessages] = React.useState<Message[]>([]);
+  const [messages, setMessages] = React.useState<MessageType[]>([]);
   const [isLoading, setIsLoading] = React.useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = React.useState(false);
+
+  const [status, setStatus] = React.useState<
+    "submitted" | "streaming" | "ready" | "error"
+  >("ready");
 
   // Auto-collapse sidebar on mobile
   React.useEffect(() => {
@@ -85,7 +89,7 @@ export default function PlaygroundPage() {
 
         const data = await response.json();
         const discordServers: DiscordServer[] = data.servers || [];
-        
+
         // Transform Discord servers to Server format
         const transformedServers: Server[] = discordServers.map((server) => ({
           id: server.server_id,
@@ -93,7 +97,7 @@ export default function PlaygroundPage() {
         }));
 
         setServers(transformedServers);
-        
+
         // Auto-select first server if available
         if (transformedServers.length > 0) {
           setSelectedServerId(transformedServers[0].id);
@@ -138,8 +142,9 @@ export default function PlaygroundPage() {
 
     // Check if a server is selected
     if (!selectedServerId) {
+      setStatus("error");
       console.error("No server selected");
-      const errorMessage: Message = {
+      const errorMessage: MessageType = {
         id: `msg-${Date.now() + 1}`,
         role: "assistant",
         content: "Please select a server before sending a message.",
@@ -164,7 +169,7 @@ export default function PlaygroundPage() {
     }
 
     // Add user message
-    const userMessage: Message = {
+    const userMessage: MessageType = {
       id: `msg-${Date.now()}`,
       role: "user",
       content,
@@ -183,6 +188,7 @@ export default function PlaygroundPage() {
         top_k: 4,
       };
 
+      setStatus("submitted");
       const response = await authenticatedFetch("/chat", {
         method: "POST",
         headers: {
@@ -209,7 +215,7 @@ export default function PlaygroundPage() {
       let sources: string[] = [];
 
       // Add initial empty assistant message
-      const assistantMessage: Message = {
+      const assistantMessage: MessageType = {
         id: assistantMessageId,
         role: "assistant",
         content: "",
@@ -220,15 +226,17 @@ export default function PlaygroundPage() {
       let buffer = "";
 
       while (true) {
+        setStatus("streaming");
         const { done, value } = await reader.read();
 
         if (done) {
+          setStatus("ready");
           break;
         }
 
         buffer += decoder.decode(value, { stream: false });
         const lines = buffer.split("\n");
-        
+
         // Keep the last incomplete line in buffer
         buffer = lines.pop() || "";
 
@@ -238,7 +246,7 @@ export default function PlaygroundPage() {
           // Parse SSE format: "event: eventName" or "data: json"
           if (line.startsWith("event: ")) {
             const eventType = line.slice(7).trim();
-            
+
             if (eventType === "done") {
               // Stream complete
               break;
@@ -251,7 +259,7 @@ export default function PlaygroundPage() {
             }
           } else if (line.startsWith("data: ")) {
             const dataStr = line.slice(6).trim();
-            
+
             if (dataStr === "null" || dataStr === "[DONE]") {
               break;
             }
@@ -264,12 +272,10 @@ export default function PlaygroundPage() {
                 sources = parsed;
                 setMessages((prev) =>
                   prev.map((msg) =>
-                    msg.id === assistantMessageId
-                      ? { ...msg, sources }
-                      : msg
+                    msg.id === assistantMessageId ? { ...msg, sources } : msg
                   )
                 );
-              } 
+              }
               // Check if it's a content delta (from OpenAI streaming)
               else if (typeof parsed === "string") {
                 accumulatedContent += parsed;
@@ -286,7 +292,10 @@ export default function PlaygroundPage() {
                 throw new Error(parsed.message);
               }
             } catch (e) {
-              if (e instanceof Error && e.message !== "Unexpected end of JSON input") {
+              if (
+                e instanceof Error &&
+                e.message !== "Unexpected end of JSON input"
+              ) {
                 console.error("SSE parse error:", e);
                 throw e;
               }
@@ -302,7 +311,9 @@ export default function PlaygroundPage() {
             thread.id === currentThreadId
               ? {
                   ...thread,
-                  lastMessage: content.substring(0, 50) + (content.length > 50 ? "..." : ""),
+                  lastMessage:
+                    content.substring(0, 50) +
+                    (content.length > 50 ? "..." : ""),
                   timestamp: new Date(),
                 }
               : thread
@@ -311,12 +322,13 @@ export default function PlaygroundPage() {
       }
     } catch (error) {
       console.error("Error sending message:", error);
-
+      setStatus("error");
       // Add error message
-      const errorMessage: Message = {
+      const errorMessage: MessageType = {
         id: `msg-${Date.now() + 1}`,
         role: "assistant",
-        content: "Sorry, I encountered an error processing your request. Please try again.",
+        content:
+          "Sorry, I encountered an error processing your request. Please try again.",
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, errorMessage]);
@@ -342,12 +354,12 @@ export default function PlaygroundPage() {
       >
         {/* Global App Sidebar - Now visible on all screen sizes */}
         <AppSidebar variant="inset" />
-        
+
         <SidebarInset className="flex flex-col h-screen overflow-hidden">
           <SiteHeader />
           <div className="flex h-[calc(100vh-3rem)] md:h-[calc(100vh-var(--header-height))] flex-1 relative overflow-hidden">
             {/* Internal Playground Sidebar - Responsive */}
-            <div className="relative" style={{ overflow: 'visible' }}>
+            <div className="relative" style={{ overflow: "visible" }}>
               <PlaygroundSidebar
                 servers={servers}
                 chatThreads={chatThreads}
@@ -369,6 +381,7 @@ export default function PlaygroundPage() {
                 messages={messages}
                 isLoading={isLoading}
                 onSendMessage={handleSendMessage}
+                status={status}
               />
             </div>
           </div>

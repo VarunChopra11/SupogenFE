@@ -3,7 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { BackendAuthProvider } from "@/context/backend-auth";
-import { shadcn } from "@clerk/themes";
+import { ThemeProvider } from "next-themes";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -25,18 +26,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider
-      afterSignOutUrl="https://supogen.com"
-    >
-      <html lang="en" className="h-full overflow-hidden">
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased h-full overflow-hidden`}
-        >
-          <BackendAuthProvider>
-            {children}
-          </BackendAuthProvider>
-        </body>
-      </html>
+    <ClerkProvider afterSignOutUrl="https://supogen.com">
+      <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+        <html lang="en" className="h-full ">
+          <body
+            className={`${geistSans.variable} ${geistMono.variable} antialiased h-full `}
+          >
+            <BackendAuthProvider>{children}</BackendAuthProvider>
+          </body>
+        </html>
+      </ThemeProvider>
     </ClerkProvider>
   );
 }
