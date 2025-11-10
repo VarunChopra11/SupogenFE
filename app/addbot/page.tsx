@@ -22,9 +22,9 @@ import { Clock, ExternalLink, RefreshCw, ShieldCheck } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 const DISCORD_BOT_URL =
-  process.env.NEXT_PUBLIC_DEPLOYMENT_MODE === "development"
+  (process.env.NEXT_PUBLIC_DEPLOYMENT_MODE === "development"
     ? "https://discord.com/oauth2/authorize?client_id=1427304496291119177&permissions=8&scope=bot%20applications.commands"
-    : "https://discord.com/oauth2/authorize?client_id=1432309525444038797&permissions=8&scope=bot%20applications.commands";
+    : "https://discord.com/oauth2/authorize?client_id=1432309525444038797&permissions=8&scope=bot%20applications.commands");
 
 type TokenResponse = {
   token?: string;

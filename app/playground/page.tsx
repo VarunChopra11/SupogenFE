@@ -76,7 +76,7 @@ export default function PlaygroundPage() {
   >();
   const [chatThreads, setChatThreads] = React.useState<ChatThread[]>([]);
   const [isLoadingThreads, setIsLoadingThreads] = React.useState(false);
-  const [messages, setMessages] = React.useState<MessageType[]>([]);
+  const [messages, setMessages] = React.useState<Message[]>([]);
   const [isLoading, setIsLoading] = React.useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = React.useState(false);
 
@@ -152,25 +152,18 @@ export default function PlaygroundPage() {
         }
 
         const chatHistoryData: BackendChatHistory[] = await response.json();
-
+        
         // Transform backend chat history to ChatThread format
         const transformedThreads: ChatThread[] = chatHistoryData.map((chat) => {
-          const lastMessage =
-            chat.messages.length > 0
-              ? chat.messages[chat.messages.length - 1].content
-              : "";
-          const firstUserMessage =
-            chat.messages.find((msg) => msg.role === "user")?.content ||
-            "New Chat";
-
+          const lastMessage = chat.messages.length > 0 
+            ? chat.messages[chat.messages.length - 1].content 
+            : "";
+          const firstUserMessage = chat.messages.find(msg => msg.role === "user")?.content || "New Chat";
+          
           return {
             id: chat.chat_id,
-            title:
-              firstUserMessage.substring(0, 30) +
-              (firstUserMessage.length > 30 ? "..." : ""),
-            lastMessage:
-              lastMessage.substring(0, 50) +
-              (lastMessage.length > 50 ? "..." : ""),
+            title: firstUserMessage.substring(0, 30) + (firstUserMessage.length > 30 ? "..." : ""),
+            lastMessage: lastMessage.substring(0, 50) + (lastMessage.length > 50 ? "..." : ""),
             timestamp: new Date(chat.updated_at),
           };
         });
@@ -195,7 +188,7 @@ export default function PlaygroundPage() {
 
   const handleThreadSelect = async (threadId: string) => {
     setSelectedThreadId(threadId);
-
+    
     try {
       // Use a separate loading state or don't set isLoading here
       // since isLoading should only be for sending messages
@@ -208,16 +201,14 @@ export default function PlaygroundPage() {
       }
 
       const chatData: BackendChatHistory = await response.json();
-
+      
       // Transform backend messages to Message format
-      const transformedMessages: MessageType[] = chatData.messages.map(
-        (msg, index) => ({
-          id: `${chatData.chat_id}-${index}`,
-          role: msg.role,
-          content: msg.content,
-          timestamp: new Date(msg.timestamp),
-        })
-      );
+      const transformedMessages: Message[] = chatData.messages.map((msg, index) => ({
+        id: `${chatData.chat_id}-${index}`,
+        role: msg.role,
+        content: msg.content,
+        timestamp: new Date(msg.timestamp),
+      }));
 
       setMessages(transformedMessages);
     } catch (error) {
@@ -250,22 +241,8 @@ export default function PlaygroundPage() {
       return;
     }
 
-    // Auto-create thread if none exists
-    let currentThreadId = selectedThreadId;
-    if (!currentThreadId) {
-      const newThread: ChatThread = {
-        id: `thread-${Date.now()}`,
-        title: content.substring(0, 30) + (content.length > 30 ? "..." : ""),
-        lastMessage: content,
-        timestamp: new Date(),
-      };
-      setChatThreads((prev) => [newThread, ...prev]);
-      setSelectedThreadId(newThread.id);
-      currentThreadId = newThread.id;
-    }
-
-    // Add user message
-    const userMessage: MessageType = {
+    // Add user message immediately for instant feedback
+    const userMessage: Message = {
       id: `msg-${Date.now()}`,
       role: "user",
       content,
@@ -291,7 +268,6 @@ export default function PlaygroundPage() {
         top_k: 4,
       };
 
-      setStatus("submitted");
       // Only include chat_id if we're in an existing chat thread
       if (selectedThreadId) {
         requestBody.chat_id = selectedThreadId;
@@ -423,34 +399,24 @@ export default function PlaygroundPage() {
           );
 
           if (historyResponse.ok) {
-            const chatHistoryData: BackendChatHistory[] =
-              await historyResponse.json();
-
-            const transformedThreads: ChatThread[] = chatHistoryData.map(
-              (chat) => {
-                const lastMessage =
-                  chat.messages.length > 0
-                    ? chat.messages[chat.messages.length - 1].content
-                    : "";
-                const firstUserMessage =
-                  chat.messages.find((msg) => msg.role === "user")?.content ||
-                  "New Chat";
-
-                return {
-                  id: chat.chat_id,
-                  title:
-                    firstUserMessage.substring(0, 30) +
-                    (firstUserMessage.length > 30 ? "..." : ""),
-                  lastMessage:
-                    lastMessage.substring(0, 50) +
-                    (lastMessage.length > 50 ? "..." : ""),
-                  timestamp: new Date(chat.updated_at),
-                };
-              }
-            );
+            const chatHistoryData: BackendChatHistory[] = await historyResponse.json();
+            
+            const transformedThreads: ChatThread[] = chatHistoryData.map((chat) => {
+              const lastMessage = chat.messages.length > 0 
+                ? chat.messages[chat.messages.length - 1].content 
+                : "";
+              const firstUserMessage = chat.messages.find(msg => msg.role === "user")?.content || "New Chat";
+              
+              return {
+                id: chat.chat_id,
+                title: firstUserMessage.substring(0, 30) + (firstUserMessage.length > 30 ? "..." : ""),
+                lastMessage: lastMessage.substring(0, 50) + (lastMessage.length > 50 ? "..." : ""),
+                timestamp: new Date(chat.updated_at),
+              };
+            });
 
             setChatThreads(transformedThreads);
-
+            
             // If this was a new thread, select the most recent one
             if (!selectedThreadId && transformedThreads.length > 0) {
               setSelectedThreadId(transformedThreads[0].id);
