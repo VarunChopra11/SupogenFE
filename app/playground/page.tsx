@@ -47,6 +47,22 @@ interface ChatThread {
   timestamp: Date;
 }
 
+// Backend API types
+interface BackendMessage {
+  role: "user" | "assistant" | "system";
+  content: string;
+  timestamp: string;
+}
+
+interface BackendChatHistory {
+  chat_id: string;
+  user_id: string;
+  server_id: string;
+  messages: BackendMessage[];
+  created_at: string;
+  updated_at: string;
+}
+
 export default function PlaygroundPage() {
   const { authenticatedFetch, apiBaseUrl } = useAuthenticatedFetch();
   const isMobile = useIsMobile();
@@ -59,7 +75,8 @@ export default function PlaygroundPage() {
     string | undefined
   >();
   const [chatThreads, setChatThreads] = React.useState<ChatThread[]>([]);
-  const [messages, setMessages] = React.useState<MessageType[]>([]);
+  const [isLoadingThreads, setIsLoadingThreads] = React.useState(false);
+  const [messages, setMessages] = React.useState<Message[]>([]);
   const [isLoading, setIsLoading] = React.useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = React.useState(false);
 
@@ -113,27 +130,106 @@ export default function PlaygroundPage() {
     fetchServers();
   }, [authenticatedFetch]);
 
+  // Fetch chat history when server changes
+  React.useEffect(() => {
+    const fetchChatHistory = async () => {
+      if (!selectedServerId) {
+        setChatThreads([]);
+        return;
+      }
+
+      try {
+        setIsLoadingThreads(true);
+        const response = await authenticatedFetch(
+          `/chat_history?server_id=${selectedServerId}&limit=20`,
+          {
+            method: "GET",
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch chat history");
+        }
+
+        const chatHistoryData: BackendChatHistory[] = await response.json();
+
+        // Transform backend chat history to ChatThread format
+        const transformedThreads: ChatThread[] = chatHistoryData.map((chat) => {
+          const lastMessage =
+            chat.messages.length > 0
+              ? chat.messages[chat.messages.length - 1].content
+              : "";
+          const firstUserMessage =
+            chat.messages.find((msg) => msg.role === "user")?.content ||
+            "New Chat";
+
+          return {
+            id: chat.chat_id,
+            title:
+              firstUserMessage.substring(0, 30) +
+              (firstUserMessage.length > 30 ? "..." : ""),
+            lastMessage:
+              lastMessage.substring(0, 50) +
+              (lastMessage.length > 50 ? "..." : ""),
+            timestamp: new Date(chat.updated_at),
+          };
+        });
+
+        setChatThreads(transformedThreads);
+      } catch (error) {
+        console.error("Error fetching chat history:", error);
+        setChatThreads([]);
+      } finally {
+        setIsLoadingThreads(false);
+      }
+    };
+
+    fetchChatHistory();
+  }, [selectedServerId, authenticatedFetch]);
+
   const handleServerChange = (serverId: string) => {
     setSelectedServerId(serverId);
-    // Optionally reload threads for the new server
-  };
-
-  const handleThreadSelect = (threadId: string) => {
-    setSelectedThreadId(threadId);
-    // TODO: Load messages for the selected thread from backend/local storage
-    // For now, just clear messages when switching threads
+    setSelectedThreadId(undefined);
     setMessages([]);
   };
 
+  const handleThreadSelect = async (threadId: string) => {
+    setSelectedThreadId(threadId);
+
+    try {
+      // Use a separate loading state or don't set isLoading here
+      // since isLoading should only be for sending messages
+      const response = await authenticatedFetch(`/chat/${threadId}`, {
+        method: "GET",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch chat");
+      }
+
+      const chatData: BackendChatHistory = await response.json();
+
+      // Transform backend messages to Message format
+      const transformedMessages: Message[] = chatData.messages.map(
+        (msg, index) => ({
+          id: `${chatData.chat_id}-${index}`,
+          role: msg.role,
+          content: msg.content,
+          timestamp: new Date(msg.timestamp),
+        })
+      );
+
+      setMessages(transformedMessages);
+    } catch (error) {
+      console.error("Error fetching chat:", error);
+      setMessages([]);
+    }
+  };
+
   const handleNewThread = () => {
-    const newThread = {
-      id: `thread-${Date.now()}`,
-      title: "New Chat",
-      lastMessage: "",
-      timestamp: new Date(),
-    };
-    setChatThreads([newThread, ...chatThreads]);
-    setSelectedThreadId(newThread.id);
+    // Clear the selected thread and messages to start a new conversation
+    // The actual thread will be created on the backend when the first message is sent
+    setSelectedThreadId(undefined);
     setMessages([]);
   };
 
@@ -182,13 +278,25 @@ export default function PlaygroundPage() {
 
     try {
       // Prepare request body according to ChatRequest schema
-      const requestBody = {
+      // Include chat_id if a thread is selected (continuing existing chat)
+      // Otherwise, backend will create a new chat
+      const requestBody: {
+        query: string;
+        server_id: string;
+        top_k: number;
+        chat_id?: string;
+      } = {
         query: content,
         server_id: selectedServerId,
         top_k: 4,
       };
 
       setStatus("submitted");
+      // Only include chat_id if we're in an existing chat thread
+      if (selectedThreadId) {
+        requestBody.chat_id = selectedThreadId;
+      }
+
       const response = await authenticatedFetch("/chat", {
         method: "POST",
         headers: {
@@ -304,21 +412,53 @@ export default function PlaygroundPage() {
         }
       }
 
-      // Update thread last message and title if auto-created
-      if (currentThreadId) {
-        setChatThreads((prev) =>
-          prev.map((thread) =>
-            thread.id === currentThreadId
-              ? {
-                  ...thread,
+      // After message is sent successfully, refresh chat history to get the updated/new chat
+      if (selectedServerId) {
+        try {
+          const historyResponse = await authenticatedFetch(
+            `/chat_history?server_id=${selectedServerId}&limit=20`,
+            {
+              method: "GET",
+            }
+          );
+
+          if (historyResponse.ok) {
+            const chatHistoryData: BackendChatHistory[] =
+              await historyResponse.json();
+
+            const transformedThreads: ChatThread[] = chatHistoryData.map(
+              (chat) => {
+                const lastMessage =
+                  chat.messages.length > 0
+                    ? chat.messages[chat.messages.length - 1].content
+                    : "";
+                const firstUserMessage =
+                  chat.messages.find((msg) => msg.role === "user")?.content ||
+                  "New Chat";
+
+                return {
+                  id: chat.chat_id,
+                  title:
+                    firstUserMessage.substring(0, 30) +
+                    (firstUserMessage.length > 30 ? "..." : ""),
                   lastMessage:
-                    content.substring(0, 50) +
-                    (content.length > 50 ? "..." : ""),
-                  timestamp: new Date(),
-                }
-              : thread
-          )
-        );
+                    lastMessage.substring(0, 50) +
+                    (lastMessage.length > 50 ? "..." : ""),
+                  timestamp: new Date(chat.updated_at),
+                };
+              }
+            );
+
+            setChatThreads(transformedThreads);
+
+            // If this was a new thread, select the most recent one
+            if (!selectedThreadId && transformedThreads.length > 0) {
+              setSelectedThreadId(transformedThreads[0].id);
+            }
+          }
+        } catch (error) {
+          console.error("Error refreshing chat history:", error);
+        }
       }
     } catch (error) {
       console.error("Error sending message:", error);

@@ -125,7 +125,7 @@ export function ChatArea({
 
   console.log(messages);
   const visibleMessages = messages.filter((msg) => msg.role !== "system");
-  const showEmptyState = !threadId || visibleMessages.length === 0;
+  const showEmptyState = visibleMessages.length === 0;
 
   return (
     <div className="flex h-full flex-1 flex-col bg-gradient-to-b from-muted/40 via-background to-background overflow-hidden">

@@ -27,15 +27,13 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider afterSignOutUrl="https://supogen.com">
-      <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-        <html lang="en" className="h-full ">
-          <body
-            className={`${geistSans.variable} ${geistMono.variable} antialiased h-full `}
-          >
-            <BackendAuthProvider>{children}</BackendAuthProvider>
-          </body>
-        </html>
-      </ThemeProvider>
+      <html lang="en" className="h-full">
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased h-full`}
+        >
+          <BackendAuthProvider>{children}</BackendAuthProvider>
+        </body>
+      </html>
     </ClerkProvider>
   );
 }

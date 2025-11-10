@@ -107,7 +107,7 @@ export function PlaygroundSidebar({
             <ScrollArea className="h-auto">
               {servers.length === 0 && !isLoadingServers ? (
                 <div className="p-2 text-sm text-muted-foreground text-center">
-                  No servers available
+                  Add server to select and chat.
                 </div>
               ) : (
                 servers.map((server) => (
@@ -133,62 +133,73 @@ export function PlaygroundSidebar({
             variant="outline"
             className="w-full justify-start gap-2 shadow-xs cursor-pointer"
             onClick={handleNewThread}
+            disabled={!selectedServerId}
           >
             <IconPlus className="!size-4" />
             <span className="text-sm font-medium">New Thread</span>
           </Button>
 
           {/* Thread List */}
-          <div className="mt-2 flex flex-col gap-1 ">
-            {chatThreads.map((thread) => (
-              <button
-                key={thread.id}
-                onClick={() => handleThreadSelect(thread.id)}
-                className={cn(
-                  "flex w-full flex-col items-start gap-1 rounded-md px-3 py-2 text-left transition-colors cursor-pointer",
-                  selectedThreadId === thread.id
-                    ? "bg-primary text-primary-foreground"
-                    : "hover:bg-accent hover:text-accent-foreground"
-                )}
-                style={{ maxWidth: "100%" }}
-              >
-                <div
-                  className="flex w-full items-center gap-2"
+          <div className="mt-2 flex flex-col gap-1">
+            {!selectedServerId ? (
+              <div className="p-4 text-sm text-muted-foreground text-center">
+                Select server to chat.
+              </div>
+            ) : chatThreads.length === 0 ? (
+              <div className="p-4 text-sm text-muted-foreground text-center">
+                No chat history yet.
+              </div>
+            ) : (
+              chatThreads.map((thread) => (
+                <button
+                  key={thread.id}
+                  onClick={() => handleThreadSelect(thread.id)}
+                  className={cn(
+                    "flex w-full flex-col items-start gap-1 rounded-md px-3 py-2 text-left transition-colors",
+                    selectedThreadId === thread.id
+                      ? "bg-primary text-primary-foreground"
+                      : "hover:bg-accent hover:text-accent-foreground"
+                  )}
                   style={{ maxWidth: "100%" }}
                 >
-                  <IconMessageCircle className="!size-4 shrink-0" />
-                  <span
-                    className="text-sm font-medium block"
-                    style={{
-                      maxWidth: "calc(100% - 2rem)",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
-                    }}
+                  <div
+                    className="flex w-full items-center gap-2"
+                    style={{ maxWidth: "100%" }}
                   >
-                    {truncateText(thread.title, 25)}
-                  </span>
-                </div>
-                {thread.lastMessage && (
-                  <span
-                    className={cn(
-                      "text-xs block",
-                      selectedThreadId === thread.id
-                        ? "text-primary-foreground/80"
-                        : "text-muted-foreground"
-                    )}
-                    style={{
-                      maxWidth: "100%",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {truncateText(thread.lastMessage, 30)}
-                  </span>
-                )}
-              </button>
-            ))}
+                    <IconMessageCircle className="!size-4 shrink-0" />
+                    <span
+                      className="text-sm font-medium block"
+                      style={{
+                        maxWidth: "calc(100% - 2rem)",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {truncateText(thread.title, 25)}
+                    </span>
+                  </div>
+                  {thread.lastMessage && (
+                    <span
+                      className={cn(
+                        "text-xs block",
+                        selectedThreadId === thread.id
+                          ? "text-primary-foreground/80"
+                          : "text-muted-foreground"
+                      )}
+                      style={{
+                        maxWidth: "100%",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {truncateText(thread.lastMessage, 30)}
+                    </span>
+                  )}
+                </button>
+              ))
+            )}
           </div>
         </div>
       </ScrollArea>
