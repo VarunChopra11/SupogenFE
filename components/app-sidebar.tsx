@@ -2,12 +2,8 @@
 
 import { SignedIn, UserButton, SignOutButton } from "@clerk/nextjs";
 import * as React from "react";
-import {
-  IconDashboard,
-  IconListDetails,
-  IconInnerShadowTop,
-  IconMessageCircle,
-} from "@tabler/icons-react";
+import { IconDashboard } from "@tabler/icons-react";
+import { Layers, Bot, ToyBrick } from "lucide-react";
 
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -33,17 +29,17 @@ const data = {
     {
       title: "Playground",
       url: "/playground",
-      icon: IconMessageCircle,
+      icon: ToyBrick,
     },
     {
       title: "Add Context",
       url: "/context",
-      icon: IconListDetails,
+      icon: Layers,
     },
     {
       title: "Add bot",
       url: "/addbot",
-      icon: IconListDetails,
+      icon: Bot,
     },
   ],
 };
@@ -63,7 +59,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
               <a href="/">
-                <IconInnerShadowTop className="!size-5" />
+                <img src={"/logo-light.png"} className="h-5 w-auto" />
                 <span className="text-base font-semibold">Supogen</span>
               </a>
             </SidebarMenuButton>
