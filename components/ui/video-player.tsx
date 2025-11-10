@@ -127,14 +127,17 @@ const VideoPlayer = ({ src }: { src: string }) => {
     >
       <video
         ref={videoRef}
-        className="w-full"
+        className="w-full "
+        muted
+        autoPlay
+        playsInline
         onTimeUpdate={handleTimeUpdate}
         src={src}
         onClick={togglePlay}
       />
 
       <AnimatePresence>
-        {showControls && (
+        {/* {showControls && (
           <motion.div
             className="absolute bottom-0 mx-auto max-w-xl left-0 right-0 p-4 m-2 bg-[#11111198] backdrop-blur-md rounded-2xl"
             initial={{ y: 20, opacity: 0, filter: "blur(10px)" }}
@@ -226,7 +229,7 @@ const VideoPlayer = ({ src }: { src: string }) => {
               </div>
             </div>
           </motion.div>
-        )}
+        )} */}
       </AnimatePresence>
     </motion.div>
   );
