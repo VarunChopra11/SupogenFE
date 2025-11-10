@@ -61,7 +61,7 @@ export function Features() {
               width={1207}
               height={929}
             />
-            <VideoPlayer src="/demo-2.mov" />
+            <VideoPlayer src="https://supogenasset.blob.core.windows.net/videos/demo-2.mov" />
             {/* </div> */}
           </div>
         </div>
