@@ -1,6 +1,8 @@
 "use client";
 
-import React, {
+import { useAuth, useClerk } from "@clerk/nextjs";
+import type React from "react";
+import {
   createContext,
   useCallback,
   useContext,
@@ -9,7 +11,6 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { useAuth, useClerk } from "@clerk/nextjs";
 
 type BackendUser = {
   user_id: string;

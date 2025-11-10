@@ -1,30 +1,13 @@
 "use client";
 
-import * as React from "react";
-import { IconSend, IconLoader2 } from "@tabler/icons-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Suggestion, Suggestions } from "@/components/ai-elements/suggestion";
 import {
-  PromptInput,
-  PromptInputActionAddAttachments,
-  PromptInputActionMenu,
-  PromptInputActionMenuContent,
-  PromptInputActionMenuTrigger,
-  PromptInputAttachment,
-  PromptInputAttachments,
-  PromptInputBody,
-  PromptInputButton,
-  PromptInputFooter,
-  type PromptInputMessage,
-  PromptInputProvider,
-  PromptInputSpeechButton,
-  PromptInputSubmit,
-  PromptInputTextarea,
-  PromptInputTools,
-  usePromptInputController,
-} from "@/components/ai-elements/prompt-input";
+  CheckIcon,
+  CopyIcon,
+  ThumbsDownIcon,
+  ThumbsUpIcon,
+} from "lucide-react";
+import * as React from "react";
+import type { MessageType } from "@/app/playground/page";
 import {
   Message,
   MessageAction,
@@ -39,21 +22,27 @@ import {
   MessageResponse,
   MessageToolbar,
 } from "@/components/ai-elements/message";
-
 import {
-  CheckIcon,
-  CopyIcon,
-  RefreshCcwIcon,
-  ThumbsDownIcon,
-  ThumbsUpIcon,
-} from "lucide-react";
+  PromptInput,
+  PromptInputActionAddAttachments,
+  PromptInputActionMenu,
+  PromptInputActionMenuContent,
+  PromptInputActionMenuTrigger,
+  PromptInputBody,
+  PromptInputFooter,
+  type PromptInputMessage,
+  PromptInputProvider,
+  PromptInputSubmit,
+  PromptInputTextarea,
+  PromptInputTools,
+} from "@/components/ai-elements/prompt-input";
 import {
   Source,
   Sources,
   SourcesContent,
   SourcesTrigger,
 } from "@/components/ai-elements/sources";
-import type { MessageType } from "@/app/playground/page";
+import { Suggestion, Suggestions } from "@/components/ai-elements/suggestion";
 
 interface ChatAreaProps {
   threadId?: string;
@@ -109,7 +98,7 @@ export function ChatArea({
     }
   };
 
-  const handleRetry = () => {
+  const _handleRetry = () => {
     console.log("Retrying response...");
   };
 
@@ -130,7 +119,7 @@ export function ChatArea({
 
   React.useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, []);
 
   console.log(messages);
   const visibleMessages = messages.filter((msg) => msg.role !== "system");
@@ -160,7 +149,7 @@ export function ChatArea({
                     key={suggestion.id}
                     onClick={() =>
                       handlePromptClick(
-                        `${suggestion.title} ${suggestion.subtitle}`
+                        `${suggestion.title} ${suggestion.subtitle}`,
                       )
                     }
                     suggestion={suggestion.title}
@@ -177,12 +166,12 @@ export function ChatArea({
                   {/* Assistant messages with multiple versions (branches) */}
 
                   {
-                    // @ts-ignore
+                    // @ts-expect-error
                     message.versions?.length > 1 ? (
                       <MessageBranch defaultBranch={0} key={message.id}>
                         <MessageBranchContent>
                           {
-                            // @ts-ignore
+                            // @ts-expect-error
                             message.versions.map((version) => (
                               <MessageContent key={version.id}>
                                 <MessageResponse>

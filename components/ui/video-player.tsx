@@ -1,18 +1,16 @@
 "use client";
 
-import React, { useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Play, Pause, Volume2, Volume1, VolumeX } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
-const formatTime = (seconds: number) => {
+const _formatTime = (seconds: number) => {
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = Math.floor(seconds % 60);
   return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
 };
 
-const CustomSlider = ({
+const _CustomSlider = ({
   value,
   onChange,
   className,
@@ -48,13 +46,13 @@ const CustomSlider = ({
 const VideoPlayer = ({ src }: { src: string }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [volume, setVolume] = useState(1);
-  const [progress, setProgress] = useState(0);
+  const [_volume, setVolume] = useState(1);
+  const [_progress, setProgress] = useState(0);
   const [isMuted, setIsMuted] = useState(false);
-  const [playbackSpeed, setPlaybackSpeed] = useState(1);
-  const [showControls, setShowControls] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
+  const [_playbackSpeed, setPlaybackSpeed] = useState(1);
+  const [_showControls, setShowControls] = useState(false);
+  const [_currentTime, setCurrentTime] = useState(0);
+  const [_duration, setDuration] = useState(0);
 
   const togglePlay = () => {
     if (videoRef.current) {
@@ -67,7 +65,7 @@ const VideoPlayer = ({ src }: { src: string }) => {
     }
   };
 
-  const handleVolumeChange = (value: number) => {
+  const _handleVolumeChange = (value: number) => {
     if (videoRef.current) {
       const newVolume = value / 100;
       videoRef.current.volume = newVolume;
@@ -80,23 +78,23 @@ const VideoPlayer = ({ src }: { src: string }) => {
     if (videoRef.current) {
       const progress =
         (videoRef.current.currentTime / videoRef.current.duration) * 100;
-      setProgress(isFinite(progress) ? progress : 0);
+      setProgress(Number.isFinite(progress) ? progress : 0);
       setCurrentTime(videoRef.current.currentTime);
       setDuration(videoRef.current.duration);
     }
   };
 
-  const handleSeek = (value: number) => {
-    if (videoRef.current && videoRef.current.duration) {
+  const _handleSeek = (value: number) => {
+    if (videoRef.current?.duration) {
       const time = (value / 100) * videoRef.current.duration;
-      if (isFinite(time)) {
+      if (Number.isFinite(time)) {
         videoRef.current.currentTime = time;
         setProgress(value);
       }
     }
   };
 
-  const toggleMute = () => {
+  const _toggleMute = () => {
     if (videoRef.current) {
       videoRef.current.muted = !isMuted;
       setIsMuted(!isMuted);
@@ -109,7 +107,7 @@ const VideoPlayer = ({ src }: { src: string }) => {
     }
   };
 
-  const setSpeed = (speed: number) => {
+  const _setSpeed = (speed: number) => {
     if (videoRef.current) {
       videoRef.current.playbackRate = speed;
       setPlaybackSpeed(speed);

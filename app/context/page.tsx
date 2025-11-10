@@ -1,16 +1,16 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { AppSidebar } from "@/components/app-sidebar";
-import { SiteHeader } from "@/components/site-header";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Loader2, Upload } from "lucide-react";
+import { useEffect, useState } from "react";
+import { AppSidebar } from "@/components/app-sidebar";
 import { ProtectedRoute } from "@/components/auth/protected-route";
-import { useAuthenticatedFetch } from "@/hooks/use-authenticated-fetch";
+import { SiteHeader } from "@/components/site-header";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useAuthenticatedFetch } from "@/hooks/use-authenticated-fetch";
 
 type Server = {
   server_id: string;
@@ -27,11 +27,11 @@ type DocumentItem = {
 };
 
 export default function Page() {
-  const [entries, setEntries] = useState<
+  const [_entries, _setEntries] = useState<
     { type: "url" | "pdf"; value: string }[]
   >([]);
   const [url, setUrl] = useState("");
-  const [pdf, setPdf] = useState<File | null>(null);
+  const [_pdf, _setPdf] = useState<File | null>(null);
   const [isValidUrl, setIsValidUrl] = useState<boolean | null>(null);
   // servers/documents state
   const { authenticatedFetch } = useAuthenticatedFetch();

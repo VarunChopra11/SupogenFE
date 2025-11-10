@@ -1,14 +1,14 @@
 "use client";
 
+import { IconCheck, IconCopy } from "@tabler/icons-react";
 import * as React from "react";
 import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import remarkBreaks from "remark-breaks";
 import rehypeHighlight from "rehype-highlight";
 import rehypeRaw from "rehype-raw";
-import { cn } from "@/lib/utils";
+import remarkBreaks from "remark-breaks";
+import remarkGfm from "remark-gfm";
 import { Button } from "@/components/ui/button";
-import { IconCheck, IconCopy } from "@tabler/icons-react";
+import { cn } from "@/lib/utils";
 import "highlight.js/styles/github-dark.css";
 
 interface MarkdownRendererProps {

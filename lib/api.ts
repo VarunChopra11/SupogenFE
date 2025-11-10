@@ -24,8 +24,8 @@ export function useApi() {
       retryOn401 = true,
     } = options;
 
-    let reqHeaders: Record<string, string> = { ...headers };
-    let url = path.startsWith("http")
+    const reqHeaders: Record<string, string> = { ...headers };
+    const url = path.startsWith("http")
       ? path
       : `${apiBaseUrl}${path.startsWith("/") ? "" : "/"}${path}`;
 
@@ -39,7 +39,7 @@ export function useApi() {
       const token = await getToken({
         template: process.env.NEXT_PUBLIC_CLERK_JWT_TEMPLATE || "fastapi",
       });
-      if (token) reqHeaders["Authorization"] = `Bearer ${token}`;
+      if (token) reqHeaders.Authorization = `Bearer ${token}`;
     }
 
     const res = await fetch(url, {
@@ -82,7 +82,7 @@ async function parseJson(res: Response) {
   const text = await res.text();
   const data = text ? safeJson(text) : null;
   if (!res.ok) {
-    const error: any = new Error((data && data.message) || res.statusText);
+    const error: any = new Error(data?.message || res.statusText);
     error.status = res.status;
     error.data = data;
     throw error;

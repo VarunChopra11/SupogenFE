@@ -175,26 +175,26 @@
 }
 
 .markdown-content > *:first-child {
-  margin-top: 0 !important;
+  margin-top: 0;
 }
 
 .markdown-content > *:last-child {
-  margin-bottom: 0 !important;
+  margin-bottom: 0;
 }
 
 /* Improve code block styling */
 .markdown-content pre {
   margin: 1rem 0;
   overflow-x: auto;
-  background-color: hsl(var(--muted)) !important;
+  background-color: hsl(var(--muted));
   border: 1px solid hsl(var(--border));
 }
 
 .markdown-content pre code {
   display: block;
   padding: 0;
-  background: transparent !important;
-  color: hsl(var(--foreground)) !important;
+  background: transparent;
+  color: hsl(var(--foreground));
   font-size: 0.875rem;
   line-height: 1.6;
 }
@@ -205,7 +205,7 @@
 }
 
 .markdown-content pre code {
-  color: hsl(var(--foreground)) !important;
+  color: hsl(var(--foreground));
 }
 
 /* Inline code styling */
@@ -285,108 +285,108 @@
   display: block;
   overflow-x: auto;
   padding: 0;
-  background: hsl(var(--muted)) !important;
-  color: hsl(var(--foreground)) !important;
+  background: hsl(var(--muted));
+  color: hsl(var(--foreground));
 }
 
 /* Force visible text in code blocks */
 pre code.hljs,
 pre code[class*="language-"],
 .markdown-content pre code {
-  color: hsl(var(--foreground)) !important;
-  background: transparent !important;
+  color: hsl(var(--foreground));
+  background: transparent;
 }
 
 /* Ensure code blocks in user messages (with primary background) are still visible */
 .prose-invert pre,
 .prose-invert pre code {
-  background: hsl(var(--muted)) !important;
-  color: hsl(var(--foreground)) !important;
+  background: hsl(var(--muted));
+  color: hsl(var(--foreground));
 }
 
 .prose-invert code:not(pre code) {
-  background: hsl(var(--muted)) !important;
-  color: hsl(var(--foreground)) !important;
+  background: hsl(var(--muted));
+  color: hsl(var(--foreground));
 }
 
 /* Light mode syntax highlighting */
 .hljs-comment,
 .hljs-quote {
-  color: hsl(var(--muted-foreground)) !important;
-  font-style: italic !important;
+  color: hsl(var(--muted-foreground));
+  font-style: italic;
 }
 
 .hljs-keyword,
 .hljs-selector-tag,
 .hljs-type {
-  color: hsl(var(--primary)) !important;
-  font-weight: 600 !important;
+  color: hsl(var(--primary));
+  font-weight: 600;
 }
 
 .hljs-string,
 .hljs-subst {
-  color: hsl(var(--chart-2)) !important;
+  color: hsl(var(--chart-2));
 }
 
 .hljs-number,
 .hljs-literal,
 .hljs-variable,
 .hljs-template-variable {
-  color: hsl(var(--chart-1)) !important;
+  color: hsl(var(--chart-1));
 }
 
 .hljs-title,
 .hljs-title.class_,
 .hljs-title.function_ {
-  color: hsl(var(--primary)) !important;
-  font-weight: 600 !important;
+  color: hsl(var(--primary));
+  font-weight: 600;
 }
 
 .hljs-params {
-  color: hsl(var(--foreground)) !important;
+  color: hsl(var(--foreground));
 }
 
 .hljs-attr,
 .hljs-attribute {
-  color: hsl(var(--chart-3)) !important;
+  color: hsl(var(--chart-3));
 }
 
 .hljs-regexp,
 .hljs-link {
-  color: hsl(var(--chart-4)) !important;
+  color: hsl(var(--chart-4));
 }
 
 .hljs-meta {
-  color: hsl(var(--chart-5)) !important;
+  color: hsl(var(--chart-5));
 }
 
 .hljs-tag {
-  color: hsl(var(--chart-3)) !important;
+  color: hsl(var(--chart-3));
 }
 
 .hljs-name {
-  color: hsl(var(--primary)) !important;
+  color: hsl(var(--primary));
 }
 
 .hljs-bullet,
 .hljs-code {
-  color: hsl(var(--chart-2)) !important;
+  color: hsl(var(--chart-2));
 }
 
 .hljs-emphasis {
-  font-style: italic !important;
+  font-style: italic;
 }
 
 .hljs-strong {
-  font-weight: bold !important;
+  font-weight: bold;
 }
 
 .hljs-deletion {
-  color: hsl(var(--destructive)) !important;
-  background-color: hsl(var(--destructive) / 0.1) !important;
+  color: hsl(var(--destructive));
+  background-color: hsl(var(--destructive) / 0.1);
 }
 
 .hljs-addition {
-  color: hsl(var(--chart-3)) !important;
-  background-color: hsl(var(--chart-3) / 0.1) !important;
+  color: hsl(var(--chart-3));
+  background-color: hsl(var(--chart-3) / 0.1);
 }

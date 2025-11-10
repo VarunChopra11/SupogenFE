@@ -1,12 +1,4 @@
-import {
-  Activity,
-  BookOpen,
-  DraftingCompass,
-  Mail,
-  MessageSquare,
-  Rocket,
-  Zap,
-} from "lucide-react";
+import { BookOpen, Rocket, Zap } from "lucide-react";
 import VideoPlayer from "../ui/video-player";
 
 export function Features() {

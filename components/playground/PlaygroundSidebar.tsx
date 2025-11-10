@@ -1,14 +1,14 @@
 "use client";
 
-import * as React from "react";
 import {
-  IconPlus,
-  IconMessageCircle,
   IconChevronLeft,
   IconChevronRight,
-  IconMenu2,
+  IconMessageCircle,
+  IconPlus,
 } from "@tabler/icons-react";
-import { cn } from "@/lib/utils";
+import * as React from "react";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Select,
   SelectContent,
@@ -16,10 +16,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 
 interface Server {
   id: string;
@@ -64,7 +63,7 @@ export function PlaygroundSidebar({
   // Function to truncate text to a specific character limit
   const truncateText = (text: string, maxLength: number = 25): string => {
     if (text.length <= maxLength) return text;
-    return text.substring(0, maxLength) + "...";
+    return `${text.substring(0, maxLength)}...`;
   };
 
   // Handle thread selection and close sheet on mobile

@@ -1,9 +1,8 @@
 import { AppSidebar } from "@/components/app-sidebar";
-
+import { ProtectedRoute } from "@/components/auth/protected-route";
 import { SectionCards } from "@/components/section-cards";
 import { SiteHeader } from "@/components/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { ProtectedRoute } from "@/components/auth/protected-route";
 import Kanban from "./kanban";
 
 export default function Page() {

@@ -1,9 +1,12 @@
 "use client";
 
+import { Clock, ExternalLink, RefreshCw, ShieldCheck } from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AppSidebar } from "@/components/app-sidebar";
-import { SiteHeader } from "@/components/site-header";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { ProtectedRoute } from "@/components/auth/protected-route";
+import { SiteHeader } from "@/components/site-header";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -11,20 +14,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Snippet } from "@/components/ui/snippet-1";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { useAuthenticatedFetch } from "@/hooks/use-authenticated-fetch";
-import { Clock, ExternalLink, RefreshCw, ShieldCheck } from "lucide-react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 const DISCORD_BOT_URL =
-  (process.env.NEXT_PUBLIC_DEPLOYMENT_MODE === "development"
+  process.env.NEXT_PUBLIC_DEPLOYMENT_MODE === "development"
     ? "https://discord.com/oauth2/authorize?client_id=1427304496291119177&permissions=8&scope=bot%20applications.commands"
-    : "https://discord.com/oauth2/authorize?client_id=1432309525444038797&permissions=8&scope=bot%20applications.commands");
+    : "https://discord.com/oauth2/authorize?client_id=1432309525444038797&permissions=8&scope=bot%20applications.commands";
 
 type TokenResponse = {
   token?: string;
@@ -95,7 +94,7 @@ export default function AddBotPage() {
       }
       const data: TokenResponse = await res
         .json()
-        .catch(() => ({} as TokenResponse));
+        .catch(() => ({}) as TokenResponse);
       const newToken = extractToken(data);
       const expiryMs = computeExpiry(data);
       setToken(newToken);
@@ -106,7 +105,7 @@ export default function AddBotPage() {
     } finally {
       setLoading(false);
     }
-  }, [authenticatedFetch, startTimer]);
+  }, [authenticatedFetch, startTimer, computeExpiry, extractToken]);
 
   useEffect(() => {
     void fetchToken();
@@ -239,8 +238,8 @@ export default function AddBotPage() {
                         {loading
                           ? "Regenerating"
                           : token
-                          ? "Regenerate"
-                          : "Generate"}
+                            ? "Regenerate"
+                            : "Generate"}
                       </Button>
                       <div className="flex items-center gap-1 text-sm text-muted-foreground">
                         <Clock className="h-4 w-4" />

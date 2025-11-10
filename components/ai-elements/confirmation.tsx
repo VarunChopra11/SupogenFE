@@ -1,8 +1,5 @@
 "use client";
 
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import type { ToolUIPart } from "ai";
 import {
   type ComponentProps,
@@ -10,6 +7,9 @@ import {
   type ReactNode,
   useContext,
 } from "react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 type ToolUIPartApproval =
   | {
@@ -45,7 +45,7 @@ type ConfirmationContextValue = {
 };
 
 const ConfirmationContext = createContext<ConfirmationContextValue | null>(
-  null
+  null,
 );
 
 const useConfirmation = () => {
@@ -97,7 +97,7 @@ export const ConfirmationRequest = ({ children }: ConfirmationRequestProps) => {
   const { state } = useConfirmation();
 
   // Only show when approval is requested
-  // @ts-ignore
+  // @ts-expect-error
   if (state !== "approval-requested") {
     return null;
   }
@@ -117,9 +117,9 @@ export const ConfirmationAccepted = ({
   // Only show when approved and in response states
   if (
     !approval?.approved ||
-    // @ts-ignore
+    // @ts-expect-error
     (state !== "approval-responded" &&
-      // @ts-ignore
+      // @ts-expect-error
       state !== "output-denied" &&
       state !== "output-available")
   ) {
@@ -141,9 +141,9 @@ export const ConfirmationRejected = ({
   // Only show when rejected and in response states
   if (
     approval?.approved !== false ||
-    // @ts-ignore
+    // @ts-expect-error
     (state !== "approval-responded" &&
-      // @ts-ignore
+      // @ts-expect-error
       state !== "output-denied" &&
       state !== "output-available")
   ) {
@@ -162,7 +162,7 @@ export const ConfirmationActions = ({
   const { state } = useConfirmation();
 
   // Only show when approval is requested
-  // @ts-ignore
+  // @ts-expect-error
   if (state !== "approval-requested") {
     return null;
   }

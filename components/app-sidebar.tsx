@@ -1,13 +1,9 @@
 "use client";
 
-import { SignedIn, UserButton, SignOutButton } from "@clerk/nextjs";
-import * as React from "react";
 import { IconDashboard } from "@tabler/icons-react";
-import { Layers, Bot, ToyBrick } from "lucide-react";
-
+import { Bot, Layers, ToyBrick } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
-
+import type * as React from "react";
 import { NavUser } from "@/components/nav-user";
 import {
   Sidebar,
@@ -18,6 +14,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
 
 const data = {
   navMain: [

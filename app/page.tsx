@@ -1,9 +1,8 @@
-import { HeroSection } from "@/components/blocks/hero-section-2";
+import { Twitter } from "lucide-react";
 
 import Image from "next/image";
-import { Features } from "@/components/blocks/features-5";
+import { HeroSection } from "@/components/blocks/hero-section-2";
 import { Footer } from "@/components/ui/footer";
-import { Github, Hexagon, Twitter } from "lucide-react";
 
 export default function Home() {
   return (

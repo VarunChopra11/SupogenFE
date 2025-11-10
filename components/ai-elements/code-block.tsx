@@ -1,8 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-// @ts-ignore
+// @ts-expect-error
 import type { Element } from "hast";
 import { CheckIcon, CopyIcon } from "lucide-react";
 import {
@@ -15,6 +13,8 @@ import {
   useState,
 } from "react";
 import { type BundledLanguage, codeToHtml, type ShikiTransformer } from "shiki";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 type CodeBlockProps = HTMLAttributes<HTMLDivElement> & {
   code: string;
@@ -54,7 +54,7 @@ const lineNumberTransformer: ShikiTransformer = {
 export async function highlightCode(
   code: string,
   language: BundledLanguage,
-  showLineNumbers = false
+  showLineNumbers = false,
 ) {
   const transformers: ShikiTransformer[] = showLineNumbers
     ? [lineNumberTransformer]
@@ -105,7 +105,7 @@ export const CodeBlock = ({
       <div
         className={cn(
           "group relative w-full overflow-hidden rounded-md border bg-background text-foreground",
-          className
+          className,
         )}
         {...props}
       >

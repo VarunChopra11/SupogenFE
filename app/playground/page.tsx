@@ -2,11 +2,11 @@
 
 import * as React from "react";
 import { AppSidebar } from "@/components/app-sidebar";
+import { ProtectedRoute } from "@/components/auth/protected-route";
+import { ChatArea } from "@/components/playground/ChatArea";
+import { PlaygroundSidebar } from "@/components/playground/PlaygroundSidebar";
 import { SiteHeader } from "@/components/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { ProtectedRoute } from "@/components/auth/protected-route";
-import { PlaygroundSidebar } from "@/components/playground/PlaygroundSidebar";
-import { ChatArea } from "@/components/playground/ChatArea";
 import { useAuthenticatedFetch } from "@/hooks/use-authenticated-fetch";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -75,7 +75,7 @@ export default function PlaygroundPage() {
     string | undefined
   >();
   const [chatThreads, setChatThreads] = React.useState<ChatThread[]>([]);
-  const [isLoadingThreads, setIsLoadingThreads] = React.useState(false);
+  const [_isLoadingThreads, setIsLoadingThreads] = React.useState(false);
   const [messages, setMessages] = React.useState<Message[]>([]);
   const [isLoading, setIsLoading] = React.useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = React.useState(false);
@@ -144,7 +144,7 @@ export default function PlaygroundPage() {
           `/chat_history?server_id=${selectedServerId}&limit=20`,
           {
             method: "GET",
-          }
+          },
         );
 
         if (!response.ok) {
@@ -152,18 +152,25 @@ export default function PlaygroundPage() {
         }
 
         const chatHistoryData: BackendChatHistory[] = await response.json();
-        
+
         // Transform backend chat history to ChatThread format
         const transformedThreads: ChatThread[] = chatHistoryData.map((chat) => {
-          const lastMessage = chat.messages.length > 0 
-            ? chat.messages[chat.messages.length - 1].content 
-            : "";
-          const firstUserMessage = chat.messages.find(msg => msg.role === "user")?.content || "New Chat";
-          
+          const lastMessage =
+            chat.messages.length > 0
+              ? chat.messages[chat.messages.length - 1].content
+              : "";
+          const firstUserMessage =
+            chat.messages.find((msg) => msg.role === "user")?.content ||
+            "New Chat";
+
           return {
             id: chat.chat_id,
-            title: firstUserMessage.substring(0, 30) + (firstUserMessage.length > 30 ? "..." : ""),
-            lastMessage: lastMessage.substring(0, 50) + (lastMessage.length > 50 ? "..." : ""),
+            title:
+              firstUserMessage.substring(0, 30) +
+              (firstUserMessage.length > 30 ? "..." : ""),
+            lastMessage:
+              lastMessage.substring(0, 50) +
+              (lastMessage.length > 50 ? "..." : ""),
             timestamp: new Date(chat.updated_at),
           };
         });
@@ -188,7 +195,7 @@ export default function PlaygroundPage() {
 
   const handleThreadSelect = async (threadId: string) => {
     setSelectedThreadId(threadId);
-    
+
     try {
       // Use a separate loading state or don't set isLoading here
       // since isLoading should only be for sending messages
@@ -201,14 +208,16 @@ export default function PlaygroundPage() {
       }
 
       const chatData: BackendChatHistory = await response.json();
-      
+
       // Transform backend messages to Message format
-      const transformedMessages: Message[] = chatData.messages.map((msg, index) => ({
-        id: `${chatData.chat_id}-${index}`,
-        role: msg.role,
-        content: msg.content,
-        timestamp: new Date(msg.timestamp),
-      }));
+      const transformedMessages: Message[] = chatData.messages.map(
+        (msg, index) => ({
+          id: `${chatData.chat_id}-${index}`,
+          role: msg.role,
+          content: msg.content,
+          timestamp: new Date(msg.timestamp),
+        }),
+      );
 
       setMessages(transformedMessages);
     } catch (error) {
@@ -294,7 +303,7 @@ export default function PlaygroundPage() {
         throw new Error("No response body");
       }
 
-      let assistantMessageId = `msg-${Date.now() + 1}`;
+      const assistantMessageId = `msg-${Date.now() + 1}`;
       let accumulatedContent = "";
       let sources: string[] = [];
 
@@ -335,11 +344,7 @@ export default function PlaygroundPage() {
               // Stream complete
               break;
             } else if (eventType === "error") {
-              // Error event will have data in next line
-              continue;
             } else if (eventType === "sources") {
-              // Sources event will have data in next line
-              continue;
             }
           } else if (line.startsWith("data: ")) {
             const dataStr = line.slice(6).trim();
@@ -356,8 +361,8 @@ export default function PlaygroundPage() {
                 sources = parsed;
                 setMessages((prev) =>
                   prev.map((msg) =>
-                    msg.id === assistantMessageId ? { ...msg, sources } : msg
-                  )
+                    msg.id === assistantMessageId ? { ...msg, sources } : msg,
+                  ),
                 );
               }
               // Check if it's a content delta (from OpenAI streaming)
@@ -367,8 +372,8 @@ export default function PlaygroundPage() {
                   prev.map((msg) =>
                     msg.id === assistantMessageId
                       ? { ...msg, content: accumulatedContent }
-                      : msg
-                  )
+                      : msg,
+                  ),
                 );
               }
               // Handle error event data
@@ -395,28 +400,38 @@ export default function PlaygroundPage() {
             `/chat_history?server_id=${selectedServerId}&limit=20`,
             {
               method: "GET",
-            }
+            },
           );
 
           if (historyResponse.ok) {
-            const chatHistoryData: BackendChatHistory[] = await historyResponse.json();
-            
-            const transformedThreads: ChatThread[] = chatHistoryData.map((chat) => {
-              const lastMessage = chat.messages.length > 0 
-                ? chat.messages[chat.messages.length - 1].content 
-                : "";
-              const firstUserMessage = chat.messages.find(msg => msg.role === "user")?.content || "New Chat";
-              
-              return {
-                id: chat.chat_id,
-                title: firstUserMessage.substring(0, 30) + (firstUserMessage.length > 30 ? "..." : ""),
-                lastMessage: lastMessage.substring(0, 50) + (lastMessage.length > 50 ? "..." : ""),
-                timestamp: new Date(chat.updated_at),
-              };
-            });
+            const chatHistoryData: BackendChatHistory[] =
+              await historyResponse.json();
+
+            const transformedThreads: ChatThread[] = chatHistoryData.map(
+              (chat) => {
+                const lastMessage =
+                  chat.messages.length > 0
+                    ? chat.messages[chat.messages.length - 1].content
+                    : "";
+                const firstUserMessage =
+                  chat.messages.find((msg) => msg.role === "user")?.content ||
+                  "New Chat";
+
+                return {
+                  id: chat.chat_id,
+                  title:
+                    firstUserMessage.substring(0, 30) +
+                    (firstUserMessage.length > 30 ? "..." : ""),
+                  lastMessage:
+                    lastMessage.substring(0, 50) +
+                    (lastMessage.length > 50 ? "..." : ""),
+                  timestamp: new Date(chat.updated_at),
+                };
+              },
+            );
 
             setChatThreads(transformedThreads);
-            
+
             // If this was a new thread, select the most recent one
             if (!selectedThreadId && transformedThreads.length > 0) {
               setSelectedThreadId(transformedThreads[0].id);

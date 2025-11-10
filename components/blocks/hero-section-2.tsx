@@ -1,15 +1,16 @@
 "use client";
 
-import React from "react";
-import Link from "next/link";
-import { ChevronRight, Menu, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { AnimatedGroup } from "@/components/ui/animated-group";
-import { cn } from "@/lib/utils";
-import { useScroll } from "motion/react";
-import { Features } from "./features-5";
-import VideoPlayer from "../ui/video-player";
 import { getCalApi } from "@calcom/embed-react";
+import { ChevronRight, Menu, X } from "lucide-react";
+import { useScroll } from "motion/react";
+import Link from "next/link";
+import React from "react";
+import { AnimatedGroup } from "@/components/ui/animated-group";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import VideoPlayer from "../ui/video-player";
+import { Features } from "./features-5";
+
 const transitionVariants = {
   item: {
     hidden: {
@@ -32,7 +33,7 @@ const transitionVariants = {
 
 export function HeroSection() {
   React.useEffect(() => {
-    (async function () {
+    (async () => {
       const cal = await getCalApi({ namespace: "support-agent-demo" });
       cal("ui", {
         cssVarsPerTheme: {
@@ -54,7 +55,7 @@ export function HeroSection() {
             <div className="mx-auto max-w-5xl px-6">
               <div className="sm:mx-auto lg:mr-auto">
                 <AnimatedGroup
-                  // @ts-ignore
+                  // @ts-expect-error
                   variants={{
                     container: {
                       visible: {
@@ -113,7 +114,7 @@ export function HeroSection() {
               </div>
             </div>
             <AnimatedGroup
-              // @ts-ignore
+              // @ts-expect-error
               variants={{
                 container: {
                   visible: {
@@ -182,7 +183,7 @@ export const HeroHeader = () => {
         data-state={menuState && "active"}
         className={cn(
           "group fixed z-20 w-full border-b transition-colors duration-150",
-          scrolled && "bg-background/50 backdrop-blur-3xl"
+          scrolled && "bg-background/50 backdrop-blur-3xl",
         )}
       >
         <div className="mx-auto max-w-5xl px-6 transition-all duration-300">
@@ -201,7 +202,7 @@ export const HeroHeader = () => {
 
               <button
                 onClick={() => setMenuState(!menuState)}
-                aria-label={menuState == true ? "Close Menu" : "Open Menu"}
+                aria-label={menuState === true ? "Close Menu" : "Open Menu"}
                 className="relative z-20 -m-2.5 -mr-4 block cursor-pointer p-2.5 lg:hidden"
               >
                 <Menu className="group-data-[state=active]:rotate-180 group-data-[state=active]:scale-0 group-data-[state=active]:opacity-0 m-auto size-6 duration-200" />

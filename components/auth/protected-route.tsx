@@ -1,10 +1,10 @@
 "use client";
 
 import { useAuth } from "@clerk/nextjs";
-import { useBackendAuth } from "@/context/backend-auth";
-import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { useBackendAuth } from "@/context/backend-auth";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;

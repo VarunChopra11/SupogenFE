@@ -1,13 +1,8 @@
 "use client";
 
-import {
-  IconCreditCard,
-  IconDotsVertical,
-  IconLogout,
-  IconNotification,
-  IconUserCircle,
-} from "@tabler/icons-react";
-
+import { SignedIn, UserButton, useClerk } from "@clerk/nextjs";
+import { IconLogout, IconUserCircle } from "@tabler/icons-react";
+import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -24,10 +19,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { SignedIn, UserButton, useClerk } from "@clerk/nextjs";
-import { useUser } from "@clerk/nextjs";
 import { useBackendAuth } from "@/context/backend-auth";
-import { useRouter } from "next/navigation";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
@@ -53,11 +45,11 @@ export function NavUser() {
     router.push("/account");
   };
 
-  const handleBillingClick = () => {
+  const _handleBillingClick = () => {
     router.push("/billing");
   };
 
-  const handleNotificationsClick = () => {
+  const _handleNotificationsClick = () => {
     router.push("/notifications");
   };
 

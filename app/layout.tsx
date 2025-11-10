@@ -25,9 +25,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider
-      afterSignOutUrl="https://supogen.com"
-    >
+    <ClerkProvider afterSignOutUrl="https://supogen.com">
       <html lang="en" className="h-full">
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased h-full`}
