@@ -61,7 +61,7 @@ export function Features() {
               width={1207}
               height={929}
             />
-            <VideoPlayer src="https://supogenasset.blob.core.windows.net/videos/demo-2.mov" />
+            <VideoPlayer src="https://3rlswxutjhdzbxmm.public.blob.vercel-storage.com/demo-2.mp4" />
             {/* </div> */}
           </div>
         </div>

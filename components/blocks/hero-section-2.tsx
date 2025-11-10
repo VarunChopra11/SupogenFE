@@ -130,7 +130,7 @@ export function HeroSection() {
                   className="bg-gradient-to-b to-background  inset-0 z-10 from-transparent from-35%"
                 />
                 {/* <div className="inset-shadow-2xs ring-background dark:inset-shadow-white/20 bg-background relative mx-auto max-w-5xl overflow-hidden rounded-2xl border p-4 shadow-lg shadow-zinc-950/15 ring-1"> */}
-                <VideoPlayer src="https://supogenasset.blob.core.windows.net/videos/demo.mov" />
+                <VideoPlayer src="https://3rlswxutjhdzbxmm.public.blob.vercel-storage.com/demo.mp4" />
                 {/* </div> */}
               </div>
             </AnimatedGroup>
