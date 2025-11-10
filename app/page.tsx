@@ -11,7 +11,13 @@ export default function Home() {
       <HeroSection />
       <Footer
         logo={
-          <Image src={"/logo-light.png"} className="h-10 w-10" alt={"logo"} />
+          <Image
+            src={"/logo-light.png"}
+            width={10}
+            height={10}
+            className="h-10 w-10"
+            alt={"logo"}
+          />
         }
         brandName="Supogen"
         socialLinks={[

@@ -64,16 +64,24 @@ interface ChatAreaProps {
 }
 
 const STARTER_PROMPTS = [
-  { id: "1", title: "What's the weather", subtitle: "in San Francisco?" },
+  {
+    id: "1",
+    title: "explains authentication process",
+    subtitle: "in docs",
+  },
   {
     id: "2",
     title: "Explain React hooks",
     subtitle: "like useState and useEffect",
   },
-  { id: "3", title: "Write a SQL query", subtitle: "to find top customers" },
+  {
+    id: "3",
+    title: "tell me optimization strategy",
+    subtitle: "to find top customers",
+  },
   {
     id: "4",
-    title: "Create a meal plan",
+    title: "tell me some best practices",
     subtitle: "for healthy weight loss",
   },
 ];
