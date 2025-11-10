@@ -33,7 +33,7 @@ export default function BackendDownPage() {
     let inFlight = false;
     const deadline = Date.now() + 10_000; // 10 seconds
 
-  const tick = async () => {
+    const tick = async () => {
       if (cancelled) return;
 
       // If already authenticated, redirect immediately
@@ -43,10 +43,10 @@ export default function BackendDownPage() {
       }
 
       // Try to ensure backend auth (avoid overlapping calls)
-    if (!inFlight) {
+      if (!inFlight) {
         inFlight = true;
         try {
-      const ok = await ensureBackendAuth(true);
+          const ok = await ensureBackendAuth(true);
           if (ok || authRef.current) {
             router.replace("/dashboard");
             return;
@@ -62,7 +62,7 @@ export default function BackendDownPage() {
         return;
       }
 
-  timer = setTimeout(tick, 1000); // poll every 1s
+      timer = setTimeout(tick, 1000); // poll every 1s
     };
 
     // start polling loop
@@ -97,15 +97,13 @@ export default function BackendDownPage() {
             <AlertCircle className="h-6 w-6 text-destructive" />
             <CardTitle>Connection Failed</CardTitle>
           </div>
-          <CardDescription>
-            Unable to authenticate with server.
-          </CardDescription>
+          <CardDescription>Unable to authenticate with server.</CardDescription>
         </CardHeader>
 
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            Your Authentication is valid, but we couldn't establish a session with our servers. 
-            This might be due to:
+            Your Authentication is valid, but we couldn't establish a session
+            with our servers. This might be due to:
           </p>
           <ul className="list-disc space-y-2 pl-6 text-sm text-muted-foreground">
             <li>The backend server is temporarily unavailable</li>

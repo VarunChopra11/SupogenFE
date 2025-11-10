@@ -60,7 +60,7 @@ export function useAuthenticatedFetch() {
 
       return response;
     },
-    [csrfToken, apiBaseUrl, ensureBackendAuth]
+    [csrfToken, apiBaseUrl, ensureBackendAuth],
   );
 
   return { authenticatedFetch, apiBaseUrl, csrfToken };

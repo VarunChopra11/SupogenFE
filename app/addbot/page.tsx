@@ -22,9 +22,9 @@ import { Clock, ExternalLink, RefreshCw, ShieldCheck } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 const DISCORD_BOT_URL =
-  (process.env.NEXT_PUBLIC_DEPLOYMENT_MODE === "development"
+  process.env.NEXT_PUBLIC_DEPLOYMENT_MODE === "development"
     ? "https://discord.com/oauth2/authorize?client_id=1427304496291119177&permissions=8&scope=bot%20applications.commands"
-    : "https://discord.com/oauth2/authorize?client_id=1432309525444038797&permissions=8&scope=bot%20applications.commands");
+    : "https://discord.com/oauth2/authorize?client_id=1432309525444038797&permissions=8&scope=bot%20applications.commands";
 
 type TokenResponse = {
   token?: string;
@@ -72,12 +72,14 @@ export default function AddBotPage() {
   };
 
   const computeExpiry = (data: TokenResponse): number => {
-    if (data.expires_at || data.expiry) {
-      const ts = Date.parse(data.expires_at || data.expiry!);
+    const expiryString = data.expires_at ?? data.expiry;
+
+    if (expiryString) {
+      const ts = Date.parse(expiryString);
       if (!Number.isNaN(ts)) return ts;
     }
-    const secs = data.expires_in ?? data.ttl ?? 300;
-    return Date.now() + secs * 1000;
+
+    return Date.now() + 3600 * 1000; // fallback
   };
 
   const fetchToken = useCallback(async () => {
@@ -173,7 +175,7 @@ export default function AddBotPage() {
                     {/* Centered buttons */}
                     <div className="flex justify-center items-center gap-3 flex-wrap">
                       <Button
-                        variant="outline "
+                        variant="outline"
                         onClick={() => handleCopy(DISCORD_BOT_URL)}
                         className="cursor-pointer"
                       >

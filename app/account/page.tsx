@@ -1,8 +1,9 @@
 "use client";
 
 import { UserProfile } from "@clerk/nextjs";
-import { ProtectedRoute } from "@/components/auth/protected-route";
 import { AppSidebar } from "@/components/app-sidebar";
+import { ProtectedRoute } from "@/components/auth/protected-route";
+
 import { SiteHeader } from "@/components/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 

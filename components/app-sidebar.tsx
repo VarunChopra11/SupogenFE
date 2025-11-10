@@ -81,7 +81,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     "data-[slot=sidebar-menu-button]:!p-1.5 transition-colors flex items-center gap-2 rounded-md",
                     isActive
                       ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                      : "hover:bg-muted"
+                      : "hover:bg-muted",
                   )}
                 >
                   <a href={item.url}>

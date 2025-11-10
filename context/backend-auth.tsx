@@ -28,10 +28,14 @@ type BackendAuthContextValue = {
 };
 
 const BackendAuthContext = createContext<BackendAuthContextValue | undefined>(
-  undefined
+  undefined,
 );
 
-export function BackendAuthProvider({ children }: { children: React.ReactNode }) {
+export function BackendAuthProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const { isSignedIn, getToken } = useAuth();
   const { signOut: clerkSignOut } = useClerk();
   const [backendAuthenticated, setBackendAuthenticated] = useState(false);
@@ -45,7 +49,7 @@ export function BackendAuthProvider({ children }: { children: React.ReactNode })
     if (!url) {
       if (process.env.NODE_ENV !== "production") {
         console.warn(
-          "NEXT_PUBLIC_API_BASE_URL is not set. Using window.location.origin as fallback."
+          "NEXT_PUBLIC_API_BASE_URL is not set. Using window.location.origin as fallback.",
         );
       }
       return typeof window !== "undefined" ? window.location.origin : "";
@@ -55,7 +59,7 @@ export function BackendAuthProvider({ children }: { children: React.ReactNode })
 
   const jwtTemplate = useMemo(
     () => process.env.NEXT_PUBLIC_CLERK_JWT_TEMPLATE || "fastapi",
-    []
+    [],
   );
 
   // ✅ Refresh session and get user + csrf_token from backend
@@ -114,7 +118,8 @@ export function BackendAuthProvider({ children }: { children: React.ReactNode })
         },
       });
 
-      if (!res.ok) throw new Error(`Handshake failed with status ${res.status}`);
+      if (!res.ok)
+        throw new Error(`Handshake failed with status ${res.status}`);
 
       const ok = await refreshSession();
       hasAttempted.current = true;
@@ -129,7 +134,15 @@ export function BackendAuthProvider({ children }: { children: React.ReactNode })
     } finally {
       setHandshakeInFlight(false);
     }
-  }, [apiBaseUrl, backendAuthenticated, getToken, isSignedIn, jwtTemplate, handshakeInFlight, refreshSession]);
+  }, [
+    apiBaseUrl,
+    backendAuthenticated,
+    getToken,
+    isSignedIn,
+    jwtTemplate,
+    handshakeInFlight,
+    refreshSession,
+  ]);
 
   // ✅ Ensure backend authentication (with optional force)
   const ensureBackendAuth = useCallback(
@@ -143,7 +156,7 @@ export function BackendAuthProvider({ children }: { children: React.ReactNode })
       if (force) return performHandshake();
       return false;
     },
-    [backendAuthenticated, isSignedIn, performHandshake, refreshSession]
+    [backendAuthenticated, isSignedIn, performHandshake, refreshSession],
   );
 
   // ✅ Sign out from backend
@@ -203,7 +216,14 @@ export function BackendAuthProvider({ children }: { children: React.ReactNode })
       signOutFromBackend,
       user,
     }),
-    [backendAuthenticated, csrfToken, apiBaseUrl, ensureBackendAuth, signOutFromBackend, user]
+    [
+      backendAuthenticated,
+      csrfToken,
+      apiBaseUrl,
+      ensureBackendAuth,
+      signOutFromBackend,
+      user,
+    ],
   );
 
   return (

@@ -76,7 +76,7 @@ export default function PlaygroundPage() {
   >();
   const [chatThreads, setChatThreads] = React.useState<ChatThread[]>([]);
   const [isLoadingThreads, setIsLoadingThreads] = React.useState(false);
-  const [messages, setMessages] = React.useState<Message[]>([]);
+  const [messages, setMessages] = React.useState<MessageType[]>([]);
   const [isLoading, setIsLoading] = React.useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = React.useState(false);
 
@@ -210,7 +210,7 @@ export default function PlaygroundPage() {
       const chatData: BackendChatHistory = await response.json();
 
       // Transform backend messages to Message format
-      const transformedMessages: Message[] = chatData.messages.map(
+      const transformedMessages: MessageType[] = chatData.messages.map(
         (msg, index) => ({
           id: `${chatData.chat_id}-${index}`,
           role: msg.role,

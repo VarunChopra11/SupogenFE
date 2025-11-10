@@ -25,7 +25,9 @@ export function useApi() {
     } = options;
 
     let reqHeaders: Record<string, string> = { ...headers };
-    let url = path.startsWith("http") ? path : `${apiBaseUrl}${path.startsWith("/") ? "" : "/"}${path}`;
+    let url = path.startsWith("http")
+      ? path
+      : `${apiBaseUrl}${path.startsWith("/") ? "" : "/"}${path}`;
 
     // Ensure backend session if not using bearer
     if (!useBearer) {
@@ -34,7 +36,9 @@ export function useApi() {
         reqHeaders["X-CSRF-Token"] = csrfToken;
       }
     } else {
-      const token = await getToken({ template: process.env.NEXT_PUBLIC_CLERK_JWT_TEMPLATE || "fastapi" });
+      const token = await getToken({
+        template: process.env.NEXT_PUBLIC_CLERK_JWT_TEMPLATE || "fastapi",
+      });
       if (token) reqHeaders["Authorization"] = `Bearer ${token}`;
     }
 

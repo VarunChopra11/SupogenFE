@@ -54,6 +54,7 @@ export function HeroSection() {
             <div className="mx-auto max-w-5xl px-6">
               <div className="sm:mx-auto lg:mr-auto">
                 <AnimatedGroup
+                  // @ts-ignore
                   variants={{
                     container: {
                       visible: {
@@ -112,6 +113,7 @@ export function HeroSection() {
               </div>
             </div>
             <AnimatedGroup
+              // @ts-ignore
               variants={{
                 container: {
                   visible: {

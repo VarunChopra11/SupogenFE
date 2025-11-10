@@ -25,7 +25,7 @@ const CustomSlider = ({
     <motion.div
       className={cn(
         "relative w-full h-1 bg-white/20 rounded-full cursor-pointer",
-        className
+        className,
       )}
       onClick={(e) => {
         const rect = e.currentTarget.getBoundingClientRect();

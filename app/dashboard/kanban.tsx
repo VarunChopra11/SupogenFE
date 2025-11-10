@@ -29,7 +29,7 @@ const exampleFeatures = Array.from({ length: 20 })
     startAt: faker.date.past({ years: 0.5, refDate: new Date() }),
     endAt: faker.date.future({ years: 0.5, refDate: new Date() }),
     column: faker.helpers.arrayElement(columns).id,
-  owner: faker.helpers.arrayElement(users),
+    owner: faker.helpers.arrayElement(users),
   }));
 const dateFormatter = new Intl.DateTimeFormat("en-US", {
   month: "short",

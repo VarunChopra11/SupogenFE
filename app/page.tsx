@@ -1,5 +1,5 @@
 import { HeroSection } from "@/components/blocks/hero-section-2";
-import VideoPlayer from "@/components/ui/video-player";
+
 import Image from "next/image";
 import { Features } from "@/components/blocks/features-5";
 import { Footer } from "@/components/ui/footer";
@@ -10,7 +10,9 @@ export default function Home() {
     <>
       <HeroSection />
       <Footer
-        logo={<img src={"/logo-light.png"} className="h-10 w-10" />}
+        logo={
+          <Image src={"/logo-light.png"} className="h-10 w-10" alt={"logo"} />
+        }
         brandName="Supogen"
         socialLinks={[
           {

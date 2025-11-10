@@ -63,7 +63,13 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
     };
 
     checkAuth();
-  }, [clerkLoaded, isSignedIn, backendAuthenticated, ensureBackendAuth, router]);
+  }, [
+    clerkLoaded,
+    isSignedIn,
+    backendAuthenticated,
+    ensureBackendAuth,
+    router,
+  ]);
 
   // Show loading state while checking authentication
   if (!clerkLoaded || isChecking) {
@@ -71,9 +77,7 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
       <div className="flex h-screen w-full items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          <p className="text-sm text-muted-foreground">
-            Authenticating...
-          </p>
+          <p className="text-sm text-muted-foreground">Authenticating...</p>
         </div>
       </div>
     );

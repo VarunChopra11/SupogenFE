@@ -158,7 +158,7 @@ export function PlaygroundSidebar({
                     "flex w-full flex-col items-start gap-1 rounded-md px-3 py-2 text-left transition-colors",
                     selectedThreadId === thread.id
                       ? "bg-primary text-primary-foreground"
-                      : "hover:bg-accent hover:text-accent-foreground"
+                      : "hover:bg-accent hover:text-accent-foreground",
                   )}
                   style={{ maxWidth: "100%" }}
                 >
@@ -185,7 +185,7 @@ export function PlaygroundSidebar({
                         "text-xs block",
                         selectedThreadId === thread.id
                           ? "text-primary-foreground/80"
-                          : "text-muted-foreground"
+                          : "text-muted-foreground",
                       )}
                       style={{
                         maxWidth: "100%",
@@ -226,7 +226,7 @@ export function PlaygroundSidebar({
               "group",
               isSheetOpen
                 ? "left-[280px] rounded-l-none border-l-0"
-                : "left-0 rounded-l-2xl border-l"
+                : "left-0 rounded-l-2xl border-l",
             )}
             aria-label={isSheetOpen ? "Close menu" : "Open menu"}
             style={{
@@ -264,7 +264,7 @@ export function PlaygroundSidebar({
             "flex h-full flex-col border-r transition-all duration-300 overflow-hidden relative",
             isCollapsed
               ? "w-0 overflow-hidden border-r-0"
-              : "w-[250px] lg:w-[280px]"
+              : "w-[250px] lg:w-[280px]",
           )}
           style={{ backgroundColor: isCollapsed ? "transparent" : "#FAFAFA" }}
         >
@@ -276,7 +276,7 @@ export function PlaygroundSidebar({
           <div
             className={cn(
               "absolute top-1/2 -translate-y-1/2 z-50 transition-all duration-300 hidden md:block",
-              isCollapsed ? "left-0" : "left-[250px] lg:left-[280px]"
+              isCollapsed ? "left-0" : "left-[250px] lg:left-[280px]",
             )}
             style={{ pointerEvents: "auto" }}
           >
@@ -295,7 +295,7 @@ export function PlaygroundSidebar({
                 "group cursor-pointer",
                 isCollapsed
                   ? "rounded-l-2xl border-l"
-                  : "rounded-l-none border-l-0"
+                  : "rounded-l-none border-l-0",
               )}
               title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
               style={{

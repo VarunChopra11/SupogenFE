@@ -79,7 +79,7 @@ export const Snippet = ({
     animationTimeout.current = setTimeout(() => setAnimation(false), 2000);
 
     navigator.clipboard.writeText(
-      _text.reduce((prev, curr) => prev + "\n" + curr)
+      _text.reduce((prev, curr) => prev + "\n" + curr),
     );
 
     if (onCopy) {
@@ -91,7 +91,7 @@ export const Snippet = ({
     <div
       className={clsx(
         "flex px-3 py-2.5 rounded-md border border-gray-alpha-400",
-        colors.background
+        colors.background,
       )}
       style={{ width: width }}
     >
@@ -102,7 +102,7 @@ export const Snippet = ({
             className={clsx(
               "font-mono text-[13px]",
               prompt && "before:content-['_']",
-              colors.text
+              colors.text,
             )}
           >
             {item}
@@ -120,7 +120,7 @@ export const Snippet = ({
               "absolute right-0 z-10",
               _text.length > 1 ? "top-0" : "top-1/2 -translate-y-1/2",
               colors.fill,
-              animation && "animate-fade-out"
+              animation && "animate-fade-out",
             )}
             onClick={onClick}
           >
@@ -138,7 +138,7 @@ export const Snippet = ({
             className={clsx(
               "absolute top-0 right-0 opacity-0",
               colors.fill,
-              animation && "animate-fade-in"
+              animation && "animate-fade-in",
             )}
           >
             <path

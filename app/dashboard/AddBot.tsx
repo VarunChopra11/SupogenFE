@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Bot, Wallet } from "lucide-react";
+import { Bot } from "lucide-react";
 
 function AddBot() {
   return (

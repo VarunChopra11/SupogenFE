@@ -50,7 +50,7 @@ type KanbanColumnProps = {
 
 type KanbanContextProps<
   T extends KanbanItemProps = KanbanItemProps,
-  C extends KanbanColumnProps = KanbanColumnProps
+  C extends KanbanColumnProps = KanbanColumnProps,
 > = {
   columns: C[];
   data: T[];
@@ -79,7 +79,7 @@ export const KanbanBoard = ({ id, children, className }: KanbanBoardProps) => {
       className={cn(
         "flex size-full max-h-[70vh] flex-col divide-y overflow-hidden rounded-md border bg-secondary text-xs shadow-sm ring-2 transition-all",
         isOver ? "ring-primary" : "ring-transparent",
-        className
+        className,
       )}
       ref={setNodeRef}
     >
@@ -124,7 +124,7 @@ export const KanbanCard = <T extends KanbanItemProps = KanbanItemProps>({
           className={cn(
             " gap-4 rounded-md p-3 shadow-sm",
             isDragging && "pointer-events-none cursor-grabbing opacity-30",
-            className
+            className,
           )}
         >
           {children ?? <p className="m-0 font-medium text-sm">{name}</p>}
@@ -136,7 +136,7 @@ export const KanbanCard = <T extends KanbanItemProps = KanbanItemProps>({
             className={cn(
               " gap-4 rounded-md p-3 shadow-sm ring-2 ring-primary",
               isDragging && "cursor-grabbing",
-              className
+              className,
             )}
           >
             {children ?? <p className="m-0 font-medium text-sm">{name}</p>}
@@ -185,7 +185,7 @@ export const KanbanHeader = ({ className, ...props }: KanbanHeaderProps) => (
 
 export type KanbanProviderProps<
   T extends KanbanItemProps = KanbanItemProps,
-  C extends KanbanColumnProps = KanbanColumnProps
+  C extends KanbanColumnProps = KanbanColumnProps,
 > = Omit<DndContextProps, "children"> & {
   children: (column: C) => ReactNode;
   className?: string;
@@ -199,7 +199,7 @@ export type KanbanProviderProps<
 
 export const KanbanProvider = <
   T extends KanbanItemProps = KanbanItemProps,
-  C extends KanbanColumnProps = KanbanColumnProps
+  C extends KanbanColumnProps = KanbanColumnProps,
 >({
   children,
   onDragStart,
@@ -216,7 +216,7 @@ export const KanbanProvider = <
   const sensors = useSensors(
     useSensor(MouseSensor),
     useSensor(TouchSensor),
-    useSensor(KeyboardSensor)
+    useSensor(KeyboardSensor),
   );
 
   const handleDragStart = (event: DragStartEvent) => {
@@ -321,7 +321,7 @@ export const KanbanProvider = <
         <div
           className={cn(
             "grid size-full auto-cols-fr grid-flow-col gap-4",
-            className
+            className,
           )}
         >
           {columns.map((column) => children(column))}
@@ -331,7 +331,7 @@ export const KanbanProvider = <
             <DragOverlay>
               <t.Out />
             </DragOverlay>,
-            document.body
+            document.body,
           )}
       </DndContext>
     </KanbanContext.Provider>

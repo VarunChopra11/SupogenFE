@@ -17,7 +17,15 @@ interface MarkdownRendererProps {
   isUser?: boolean;
 }
 
-function CodeBlock({ language, value, isUser }: { language: string; value: string; isUser: boolean }) {
+function CodeBlock({
+  language,
+  value,
+  isUser,
+}: {
+  language: string;
+  value: string;
+  isUser: boolean;
+}) {
   const [copied, setCopied] = React.useState(false);
 
   const handleCopy = async () => {
@@ -47,7 +55,9 @@ function CodeBlock({ language, value, isUser }: { language: string; value: strin
       </div>
       <div className="overflow-x-auto bg-muted">
         <pre className="!m-0 !bg-muted p-4 !text-foreground">
-          <code className={`language-${language} !bg-transparent !text-foreground text-sm leading-relaxed block`}>
+          <code
+            className={`language-${language} !bg-transparent !text-foreground text-sm leading-relaxed block`}
+          >
             {value}
           </code>
         </pre>
@@ -66,7 +76,7 @@ export function MarkdownRenderer({
       className={cn(
         "markdown-content prose prose-sm dark:prose-invert max-w-none",
         isUser ? "prose-invert" : "",
-        className
+        className,
       )}
     >
       <ReactMarkdown
@@ -75,10 +85,16 @@ export function MarkdownRenderer({
         components={{
           // Headings
           h1: ({ node, ...props }) => (
-            <h1 className="text-2xl font-bold mt-6 mb-4 pb-2 border-b" {...props} />
+            <h1
+              className="text-2xl font-bold mt-6 mb-4 pb-2 border-b"
+              {...props}
+            />
           ),
           h2: ({ node, ...props }) => (
-            <h2 className="text-xl font-bold mt-5 mb-3 pb-2 border-b" {...props} />
+            <h2
+              className="text-xl font-bold mt-5 mb-3 pb-2 border-b"
+              {...props}
+            />
           ),
           h3: ({ node, ...props }) => (
             <h3 className="text-lg font-semibold mt-4 mb-2" {...props} />
@@ -105,7 +121,7 @@ export function MarkdownRenderer({
                 "font-medium underline underline-offset-4 transition-colors",
                 isUser
                   ? "text-primary-foreground/90 hover:text-primary-foreground"
-                  : "text-primary hover:text-primary/80"
+                  : "text-primary hover:text-primary/80",
               )}
               target="_blank"
               rel="noopener noreferrer"
@@ -127,15 +143,17 @@ export function MarkdownRenderer({
             const match = /language-(\w+)/.exec(className || "");
             const language = match ? match[1] : "";
             const inline = !className;
-            
+
             // Properly extract text content from children
             const getTextContent = (child: any): string => {
-              if (typeof child === 'string') return child;
-              if (Array.isArray(child)) return child.map(getTextContent).join('');
-              if (child?.props?.children) return getTextContent(child.props.children);
-              return '';
+              if (typeof child === "string") return child;
+              if (Array.isArray(child))
+                return child.map(getTextContent).join("");
+              if (child?.props?.children)
+                return getTextContent(child.props.children);
+              return "";
             };
-            
+
             const value = getTextContent(children).replace(/\n$/, "");
 
             if (inline) {
@@ -145,7 +163,7 @@ export function MarkdownRenderer({
                     "relative rounded px-[0.4rem] py-[0.2rem] font-mono text-xs font-semibold",
                     isUser
                       ? "bg-primary-foreground/20 text-primary-foreground"
-                      : "bg-muted text-foreground"
+                      : "bg-muted text-foreground",
                   )}
                   {...props}
                 >
@@ -154,7 +172,9 @@ export function MarkdownRenderer({
               );
             }
 
-            return <CodeBlock language={language} value={value} isUser={isUser} />;
+            return (
+              <CodeBlock language={language} value={value} isUser={isUser} />
+            );
           },
 
           // Blockquotes
@@ -164,7 +184,7 @@ export function MarkdownRenderer({
                 "mt-4 border-l-4 pl-4 italic",
                 isUser
                   ? "border-primary-foreground/50 text-primary-foreground/90"
-                  : "border-muted-foreground/50 text-muted-foreground"
+                  : "border-muted-foreground/50 text-muted-foreground",
               )}
               {...props}
             />
@@ -180,7 +200,7 @@ export function MarkdownRenderer({
             <thead
               className={cn(
                 "border-b font-medium",
-                isUser ? "bg-primary-foreground/10" : "bg-muted/50"
+                isUser ? "bg-primary-foreground/10" : "bg-muted/50",
               )}
               {...props}
             />
@@ -192,16 +212,14 @@ export function MarkdownRenderer({
           th: ({ node, ...props }) => (
             <th className="px-4 py-2 text-left font-semibold" {...props} />
           ),
-          td: ({ node, ...props }) => (
-            <td className="px-4 py-2" {...props} />
-          ),
+          td: ({ node, ...props }) => <td className="px-4 py-2" {...props} />,
 
           // Horizontal rule
           hr: ({ node, ...props }) => (
             <hr
               className={cn(
                 "my-6 border-t",
-                isUser ? "border-primary-foreground/30" : "border-border"
+                isUser ? "border-primary-foreground/30" : "border-border",
               )}
               {...props}
             />

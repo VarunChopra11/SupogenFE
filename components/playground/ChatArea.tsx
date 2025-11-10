@@ -54,12 +54,13 @@ import {
   SourcesTrigger,
 } from "@/components/ai-elements/sources";
 import type { MessageType } from "@/app/playground/page";
+
 interface ChatAreaProps {
   threadId?: string;
   messages: MessageType[];
   isLoading?: boolean;
   onSendMessage: (message: string) => void;
-  status: "";
+  status: "error" | "streaming" | "submitted" | "ready";
 }
 
 const STARTER_PROMPTS = [
@@ -86,12 +87,12 @@ export function ChatArea({
 }: ChatAreaProps) {
   const messagesEndRef = React.useRef<HTMLDivElement>(null);
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);
-  const [liked, setLiked] = React.useState({});
-  const [disliked, setDisliked] = React.useState({});
+  const [liked, setLiked] = React.useState<Record<string, boolean>>({});
+  const [disliked, setDisliked] = React.useState<Record<string, boolean>>({});
   const [copied, setCopied] = React.useState<Record<string, boolean>>({});
 
   const handleSend = (message: PromptInputMessage) => {
-    onSendMessage(message.text);
+    onSendMessage(message.text || "hello");
   };
 
   const handlePromptClick = (prompt: string) => {
@@ -166,32 +167,154 @@ export function ChatArea({
               {visibleMessages.map((message) => (
                 <Message from={message.role} key={message.id}>
                   {/* Assistant messages with multiple versions (branches) */}
-                  {message.versions?.length > 1 ? (
-                    <MessageBranch defaultBranch={0} key={message.id}>
-                      <MessageBranchContent>
-                        {message.versions.map((version) => (
-                          <MessageContent key={version.id}>
-                            <MessageResponse>{version.content}</MessageResponse>
-                          </MessageContent>
-                        ))}
-                      </MessageBranchContent>
 
-                      {message.role === "assistant" && (
-                        <MessageToolbar>
-                          <MessageBranchSelector from={message.role}>
-                            <MessageBranchPrevious />
-                            <MessageBranchPage />
-                            <MessageBranchNext />
-                          </MessageBranchSelector>
+                  {
+                    // @ts-ignore
+                    message.versions?.length > 1 ? (
+                      <MessageBranch defaultBranch={0} key={message.id}>
+                        <MessageBranchContent>
+                          {
+                            // @ts-ignore
+                            message.versions.map((version) => (
+                              <MessageContent key={version.id}>
+                                <MessageResponse>
+                                  {version.content}
+                                </MessageResponse>
+                              </MessageContent>
+                            ))
+                          }
+                        </MessageBranchContent>
 
-                          <MessageActions>
-                            {/* <MessageAction
+                        {message.role === "assistant" && (
+                          <MessageToolbar>
+                            <MessageBranchSelector from={message.role}>
+                              <MessageBranchPrevious />
+                              <MessageBranchPage />
+                              <MessageBranchNext />
+                            </MessageBranchSelector>
+
+                            <MessageActions>
+                              {/* <MessageAction
                             label="Retry"
                             onClick={handleRetry}
                             tooltip="Regenerate response"
                           >
                             <RefreshCcwIcon className="size-4" />
                           </MessageAction> */}
+
+                              <MessageAction
+                                className="cursor-pointer"
+                                label="Like"
+                                onClick={() => {
+                                  setLiked((prev) => ({
+                                    ...prev,
+                                    [message.id]: !prev[message.id],
+                                  }));
+
+                                  // turn off dislike if user liked
+                                  setDisliked((prev) => ({
+                                    ...prev,
+                                    [message.id]: false,
+                                  }));
+                                }}
+                                tooltip="Like this response"
+                              >
+                                <ThumbsUpIcon
+                                  className="size-4"
+                                  fill={
+                                    liked[message.id] ? "currentColor" : "none"
+                                  }
+                                />
+                              </MessageAction>
+
+                              <MessageAction
+                                className="cursor-pointer"
+                                label="Dislike"
+                                onClick={() => {
+                                  setDisliked((prev) => ({
+                                    ...prev,
+                                    [message.id]: !prev[message.id],
+                                  }));
+
+                                  // turn off like if user disliked
+                                  setLiked((prev) => ({
+                                    ...prev,
+                                    [message.id]: false,
+                                  }));
+                                }}
+                                tooltip="Dislike this response"
+                              >
+                                <ThumbsDownIcon
+                                  className="size-4"
+                                  fill={
+                                    disliked[message.id]
+                                      ? "currentColor"
+                                      : "none"
+                                  }
+                                />
+                              </MessageAction>
+
+                              <MessageAction
+                                className="cursor-pointer"
+                                label="Copy"
+                                onClick={() =>
+                                  handleCopy(message.content, message.id)
+                                }
+                                tooltip="Copy to clipboard"
+                              >
+                                {copied[message.id] ? (
+                                  <CheckIcon className="size-4 text-green-500" />
+                                ) : (
+                                  <CopyIcon className="size-4" />
+                                )}
+                              </MessageAction>
+                            </MessageActions>
+                          </MessageToolbar>
+                        )}
+                      </MessageBranch>
+                    ) : (
+                      <div>
+                        {/* Normal message content */}
+
+                        <MessageContent>
+                          {message.role === "assistant" ? (
+                            <>
+                              <MessageResponse>
+                                {isLoading &&
+                                message.id === messages[messages.length - 1].id
+                                  ? "Thinking..."
+                                  : message.content}
+                              </MessageResponse>
+                              <Sources>
+                                <SourcesTrigger
+                                  count={message?.sources?.length || 0}
+                                />
+                                <SourcesContent>
+                                  {message?.sources?.map((source) => (
+                                    <Source
+                                      href={source}
+                                      key={source}
+                                      title={source}
+                                    />
+                                  ))}
+                                </SourcesContent>
+                              </Sources>
+                            </>
+                          ) : (
+                            message.content
+                          )}
+                        </MessageContent>
+
+                        {/* Actions for normal assistant messages */}
+                        {message.role === "assistant" && (
+                          <MessageActions>
+                            {/* <MessageAction
+                          label="Retry"
+                          onClick={handleRetry}
+                          tooltip="Regenerate response"
+                        >
+                          <RefreshCcwIcon className="size-4" />
+                        </MessageAction> */}
 
                             <MessageAction
                               className="cursor-pointer"
@@ -242,7 +365,6 @@ export function ChatArea({
                                 }
                               />
                             </MessageAction>
-
                             <MessageAction
                               className="cursor-pointer"
                               label="Copy"
@@ -258,118 +380,10 @@ export function ChatArea({
                               )}
                             </MessageAction>
                           </MessageActions>
-                        </MessageToolbar>
-                      )}
-                    </MessageBranch>
-                  ) : (
-                    <div>
-                      {/* Normal message content */}
-
-                      <MessageContent>
-                        {message.role === "assistant" ? (
-                          <>
-                            <MessageResponse>
-                              {isLoading &&
-                              message.id === messages[messages.length - 1].id
-                                ? "Thinking..."
-                                : message.content}
-                            </MessageResponse>
-                            <Sources>
-                              <SourcesTrigger
-                                count={message?.sources?.length || 0}
-                              />
-                              <SourcesContent>
-                                {message?.sources?.map((source) => (
-                                  <Source
-                                    href={source}
-                                    key={source}
-                                    title={source}
-                                  />
-                                ))}
-                              </SourcesContent>
-                            </Sources>
-                          </>
-                        ) : (
-                          message.content
                         )}
-                      </MessageContent>
-
-                      {/* Actions for normal assistant messages */}
-                      {message.role === "assistant" && (
-                        <MessageActions>
-                          {/* <MessageAction
-                          label="Retry"
-                          onClick={handleRetry}
-                          tooltip="Regenerate response"
-                        >
-                          <RefreshCcwIcon className="size-4" />
-                        </MessageAction> */}
-
-                          <MessageAction
-                            className="cursor-pointer"
-                            label="Like"
-                            onClick={() => {
-                              setLiked((prev) => ({
-                                ...prev,
-                                [message.id]: !prev[message.id],
-                              }));
-
-                              // turn off dislike if user liked
-                              setDisliked((prev) => ({
-                                ...prev,
-                                [message.id]: false,
-                              }));
-                            }}
-                            tooltip="Like this response"
-                          >
-                            <ThumbsUpIcon
-                              className="size-4"
-                              fill={liked[message.id] ? "currentColor" : "none"}
-                            />
-                          </MessageAction>
-
-                          <MessageAction
-                            className="cursor-pointer"
-                            label="Dislike"
-                            onClick={() => {
-                              setDisliked((prev) => ({
-                                ...prev,
-                                [message.id]: !prev[message.id],
-                              }));
-
-                              // turn off like if user disliked
-                              setLiked((prev) => ({
-                                ...prev,
-                                [message.id]: false,
-                              }));
-                            }}
-                            tooltip="Dislike this response"
-                          >
-                            <ThumbsDownIcon
-                              className="size-4"
-                              fill={
-                                disliked[message.id] ? "currentColor" : "none"
-                              }
-                            />
-                          </MessageAction>
-                          <MessageAction
-                            className="cursor-pointer"
-                            label="Copy"
-                            onClick={() =>
-                              handleCopy(message.content, message.id)
-                            }
-                            tooltip="Copy to clipboard"
-                          >
-                            {copied[message.id] ? (
-                              <CheckIcon className="size-4 text-green-500" />
-                            ) : (
-                              <CopyIcon className="size-4" />
-                            )}
-                          </MessageAction>
-                        </MessageActions>
-                      )}
-                    </div>
-                  )}
+                      </div>
+                    )
+                  }
                 </Message>
               ))}
 

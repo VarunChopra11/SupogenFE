@@ -104,7 +104,7 @@ export default function Page() {
       try {
         const docsRes = await authenticatedFetch(
           `/documents/get_documents/${selectedServerId}`,
-          { method: "GET" }
+          { method: "GET" },
         );
         if (docsRes.ok) {
           const data = (await docsRes.json()) as DocumentItem[];
@@ -170,7 +170,7 @@ export default function Page() {
         setDocumentsError(null);
         const res = await authenticatedFetch(
           `/documents/get_documents/${selectedServerId}`,
-          { method: "GET", signal: controller.signal }
+          { method: "GET", signal: controller.signal },
         );
         if (!res.ok)
           throw new Error(`Failed to load documents (${res.status})`);
