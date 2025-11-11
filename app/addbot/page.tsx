@@ -71,17 +71,6 @@ export default function AddBotPage() {
     return data.token || data.secret || data.value || data.access_token || "";
   };
 
-  const computeExpiry = (data: TokenResponse): number => {
-    const expiryString = data.expires_at ?? data.expiry;
-
-    if (expiryString) {
-      const ts = Date.parse(expiryString);
-      if (!Number.isNaN(ts)) return ts;
-    }
-
-    return Date.now() + 3600 * 1000; // fallback
-  };
-
   const fetchToken = useCallback(async () => {
     setLoading(true);
     setError("");
@@ -97,7 +86,8 @@ export default function AddBotPage() {
         .json()
         .catch(() => ({} as TokenResponse));
       const newToken = extractToken(data);
-      const expiryMs = computeExpiry(data);
+      // Fixed 5-minute expiry
+      const expiryMs = Date.now() + 5 * 60 * 1000;
       setToken(newToken);
       setExpiresAt(expiryMs);
       startTimer(expiryMs);
