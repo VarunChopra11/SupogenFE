@@ -144,7 +144,13 @@ export default function Page() {
         console.log(data);
 
         if (!active) return;
-        setServers(Array.isArray(data?.servers) ? data.servers : []);
+        const serverList = Array.isArray(data?.servers) ? data.servers : [];
+        setServers(serverList);
+        
+        // Auto-select the first server if available and no server is currently selected
+        if (serverList.length > 0 && !selectedServerId) {
+          setSelectedServerId(serverList[0].server_id);
+        }
       } catch (e: any) {
         if (e?.name === "AbortError") return;
         setServersError(e?.message || "Failed to load servers");
