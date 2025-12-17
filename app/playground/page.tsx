@@ -96,7 +96,7 @@ export default function PlaygroundPage() {
     const fetchServers = async () => {
       try {
         setIsLoadingServers(true);
-        const response = await authenticatedFetch("/auth/discord/get_servers", {
+        const response = await authenticatedFetch("/discord/get_servers", {
           method: "GET",
         });
 
@@ -141,7 +141,7 @@ export default function PlaygroundPage() {
       try {
         setIsLoadingThreads(true);
         const response = await authenticatedFetch(
-          `/chat_history?server_id=${selectedServerId}&limit=20`,
+          `/chat/chat_history?server_id=${selectedServerId}&limit=20`,
           {
             method: "GET",
           }
@@ -282,7 +282,7 @@ export default function PlaygroundPage() {
         requestBody.chat_id = selectedThreadId;
       }
 
-      const response = await authenticatedFetch("/chat", {
+      const response = await authenticatedFetch("/chat/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -401,7 +401,7 @@ export default function PlaygroundPage() {
       if (selectedServerId) {
         try {
           const historyResponse = await authenticatedFetch(
-            `/chat_history?server_id=${selectedServerId}&limit=20`,
+            `/chat/chat_history?server_id=${selectedServerId}&limit=20`,
             {
               method: "GET",
             }
