@@ -61,7 +61,7 @@ export function Features() {
               width={1207}
               height={929}
             />
-            <VideoPlayer src="https://dwfi8ba1rjjy19kb.public.blob.vercel-storage.com/Demo-2.mov" />
+            <VideoPlayer src="https://youtu.be/kdmaPT56xeI" />
             {/* </div> */}
           </div>
         </div>
